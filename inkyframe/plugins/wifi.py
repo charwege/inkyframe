@@ -13,6 +13,30 @@ def wifi_payload(ssid, password, security="WPA", hidden=False):
     return "WIFI:" + ";".join(parts) + ";;"
 
 
+def qr_modules(s):
+    """QR code of the network as rows of booleans (True = dark module, no quiet zone).
+    s: dict with ssid, password, security, hidden (settings or sample)."""
+    from inkyframe import qr
+    return [[bool(c) for c in row] for row in
+            qr.encode(wifi_payload(s["ssid"], s.get("password", ""), s.get("security", "WPA"), s.get("hidden")))]
+
+
+def draw_modules(d, modules, x, y, size, dark=(0, 0, 0), light=None, quiet=4):
+    """Draw `modules` into the square (x, y, size) with whole-pixel modules, centred; `light` fills the
+    square first (None = leave the background). Returns the pixel size of one module."""
+    n = len(modules) + 2 * quiet
+    s = max(1, size // n)
+    off = (size - s * n) // 2
+    if light is not None:
+        d.rectangle((x, y, x + size - 1, y + size - 1), fill=light)
+    for r, row in enumerate(modules):
+        for c, on in enumerate(row):
+            if on:
+                px, py = x + off + (c + quiet) * s, y + off + (r + quiet) * s
+                d.rectangle((px, py, px + s - 1, py + s - 1), fill=dark)
+    return s
+
+
 class GuestWifi(Plugin):
     id = "wifi"
     name = {"en": "Guest Wi-Fi", "de": "Gäste-WLAN"}
@@ -37,12 +61,38 @@ class GuestWifi(Plugin):
                 "security": "WPA", "hidden": False, "show_password": True,
                 "note": ctx.t("Welcome! Make yourself at home.", "Herzlich willkommen!")}
 
+    def view(self, ctx, data):
+        """Display-ready facts for the studio layouts – see docs/views/wifi.md."""
+        s = data
+        security = s.get("security") or "WPA"
+        is_open = security == "nopass"
+        password = s.get("password") or ""
+        modules = qr_modules(s)
+        return {
+            "title": ctx.t("Guest Wi-Fi", "Gäste-WLAN"),
+            "hint": ctx.t("Scan with your phone camera", "Mit der Handykamera scannen"),
+            "network_label": ctx.t("Network", "Netzwerk"), "password_label": ctx.t("Password", "Passwort"),
+            "ssid": s["ssid"],
+            "password": password if s.get("show_password") and not is_open else "",
+            "security": "" if is_open else security, "open": is_open, "hidden": bool(s.get("hidden")),
+            "note": s.get("note") or "",
+            "payload": wifi_payload(s["ssid"], password, security, s.get("hidden")),
+            "modules": modules, "size": len(modules),
+            "place": ctx.location.get("name", ""),
+            "today": ctx.today, "date_text": ctx.date(ctx.today),
+        }
+
     def render(self, ctx, data=None):
         s = data or ctx.settings
         if not s.get("ssid"):
             return ctx.message(ctx.t("Wi-Fi not set up yet", "WLAN noch nicht eingerichtet"),
                                ctx.t("Enter network name and password under Plugins → Guest Wi-Fi.",
                                      "Netzwerkname und Passwort unter Plugins → Gäste-WLAN eintragen."))
+        from inkyframe import layouts
+        v = self.view(ctx, s)
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         img, d = ctx.canvas()
         size = 420
         ctx.qr(d, wifi_payload(s["ssid"], s.get("password", ""), s.get("security", "WPA"), s.get("hidden")),

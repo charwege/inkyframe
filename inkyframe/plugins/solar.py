@@ -15,6 +15,14 @@ def _num(x):
         return None
 
 
+T0, T1 = 5, 22            # hours the day's curve covers
+TICKS = (6, 9, 12, 15, 18, 21)
+
+
+def _minutes(hm):
+    return int(hm[:2]) * 60 + int(hm[3:])
+
+
 class Solar(Plugin):
     id = "solar"
     name = {"en": "Solar Power", "de": "Solarstrom"}
@@ -97,6 +105,46 @@ class Solar(Plugin):
         return {"latest": {"power": curve[-1][1] if curve else 0, "today_kwh": kwh, "total_kwh": 1234.5},
                 "curve": curve, "history": {}}
 
+    # ---------------------------------------------------------------- view
+    def view(self, ctx, data):
+        """Display-ready facts for the design layouts (docs/views/solar.md)."""
+        v = data["latest"]
+        s = ctx.settings
+        peak = float(s.get("peak", 800))
+        price = float(s.get("price", 30))
+        power = v.get("power") or 0
+        kwh = v.get("today_kwh") or 0
+        euro = kwh * price / 100
+        total = v.get("total_kwh") or None
+        curve = [[t, p] for t, p in data.get("curve", [])]
+        watts = [p for _, p in curve]
+        top = max(range(len(curve)), key=lambda i: watts[i]) if curve else None
+        nm = ctx.now.hour * 60 + ctx.now.minute
+        history = [{"day": k, "kwh": e} for k, e in sorted((data.get("history") or {}).items())]
+        return {
+            "title": ctx.t("Solar power", "Solarstrom"), "subtitle": ctx.t("Today", "Heute"),
+            "place": ctx.location.get("name", ""),
+            "power": power, "power_w": round(power), "power_text": f"{round(power)} W",
+            "power_label": ctx.t("right now", "gerade jetzt"),
+            "power_frac": min(max(power, 0), peak) / peak if peak else 0,
+            "today_kwh": kwh, "today_num": ctx.num(kwh), "today_text": f"{ctx.num(kwh)} kWh",
+            "saved": euro, "saved_num": ctx.num(euro), "saved_text": f"{ctx.num(euro)} €",
+            "today_line": ctx.t("today · approx. {e} € saved", "heute · ca. {e} € gespart", e=ctx.num(euro)),
+            "total_kwh": total, "total_num": ctx.num(total, 0) if total else "",
+            "total_text": f"{ctx.num(total, 0)} kWh" if total else "",
+            "total_line": ctx.t("{t} kWh in total", "{t} kWh insgesamt", t=ctx.num(total, 0)) if total else "",
+            "peak": peak, "peak_text": f"{int(peak)} W", "price": price,
+            "curve": curve, "times": [t for t, _ in curve], "hours": [_minutes(t) / 60 for t, _ in curve],
+            "watts": watts,
+            "max_w": watts[top] if curve else None, "max_text": f"{round(watts[top])} W" if curve else "",
+            "max_time": curve[top][0] if curve else "",
+            "t0": T0, "t1": T1, "ticks": list(TICKS), "tick_labels": [f"{h:02d}" for h in TICKS],
+            "now": nm / 60, "now_text": f"{ctx.now:%H:%M}", "now_visible": T0 * 60 <= nm <= T1 * 60,
+            "history": history,
+            "footer": ctx.t("Updated {t}", "Stand {t}", t=f"{ctx.now:%H:%M}"),
+            "today": ctx.today,
+        }
+
     # ---------------------------------------------------------------- drawing
     def render(self, ctx, data=None):
         if data is None:
@@ -107,6 +155,11 @@ class Solar(Plugin):
                                    ctx.t("Enter your OpenDTU address or Home Assistant details under Plugins → Solar Power.",
                                          "OpenDTU-Adresse oder Home-Assistant-Daten unter Plugins → Solarstrom eintragen."))
             data = st
+        from inkyframe import layouts
+        v = self.view(ctx, data)
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         v, curve = data["latest"], data.get("curve", [])
         peak = float(ctx.settings.get("peak", 800))
         img, d = ctx.canvas()

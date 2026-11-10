@@ -124,6 +124,7 @@ class Spotify(Plugin):
                 "artist": ", ".join(a["name"] for a in item.get("artists", [])),
                 "album": item.get("album", {}).get("name", ""),
                 "album_id": item.get("album", {}).get("id", ""),
+                "duration_ms": item.get("duration_ms"),
                 "image": imgs[0]["url"] if imgs else None}
 
     def now_playing(self, ctx, max_age=10):
@@ -146,6 +147,7 @@ class Spotify(Plugin):
                         imgs = item.get("images") or show.get("images", [])
                         info = {"title": item["name"], "artist": show.get("publisher", ""),
                                 "album": show.get("name", ""), "album_id": item.get("id", ""),
+                                "duration_ms": item.get("duration_ms"),
                                 "image": imgs[0]["url"] if imgs else None}
                     else:
                         info = self._track(item)
@@ -202,11 +204,44 @@ class Spotify(Plugin):
             d.line((0, i, 640, i), fill=(int(40 + i / 4), 30, int(200 - i / 5)))
         d.ellipse((160, 160, 480, 480), fill=(240, 200, 40))
         return {"title": "A Rather Long Song Title (Remastered)", "artist": "The Performers",
-                "album": "Album of the Week", "cover": cov, "playing": True}
+                "album": "Album of the Week", "cover": cov, "playing": True, "duration_ms": 245000}
+
+    # ---------------------------------------------------------------- view
+    def view(self, ctx, data):
+        """Display-ready facts for the studio layouts – see docs/views/spotify.md.
+
+        data: a track dict (as from sample()/now_playing()); render() adds "state"
+        ("playing" | "paused" | "recent") and the fetched "cover" image.
+        """
+        state = data.get("state") or ("playing" if data.get("playing", True) else "paused")
+        label = {"paused": ctx.t("Paused", "Pausiert"),
+                 "recent": ctx.t("Recently played", "Zuletzt gehört")}.get(state) or ctx.t("Now playing", "Läuft gerade")
+        cover = data.get("cover")
+        if cover is not None and cover.mode != "RGB":
+            cover = cover.convert("RGB")
+        ms = data.get("duration_ms")
+        secs = int(round(ms / 1000)) if isinstance(ms, (int, float)) and ms > 0 else None
+        if secs is None:
+            dur = ""
+        elif secs >= 3600:
+            dur = f"{secs // 3600}:{secs % 3600 // 60:02d}:{secs % 60:02d}"
+        else:
+            dur = f"{secs // 60}:{secs % 60:02d}"
+        return {
+            "title": self.display_name(ctx.lang), "source": "Spotify",
+            "label": label, "state": state, "playing": state == "playing",
+            "track": data.get("title", ""), "artist": data.get("artist", ""), "album": data.get("album", ""),
+            "image": cover, "has_image": cover is not None,
+            "duration": secs, "duration_text": dur,
+            "cover_only": ctx.settings.get("layout") == "cover",
+            "now": ctx.now, "today": ctx.today, "date": ctx.date(ctx.today, year=True),
+            "time": f"{ctx.now:%H:%M}", "place": ctx.location.get("name", ""),
+        }
 
     # ---------------------------------------------------------------- drawing
     def render(self, ctx, data=None):
         label = ctx.t("Now playing", "Läuft gerade")
+        state = "playing"
         track = data
         if track is None:
             if not self.connected(ctx):
@@ -217,15 +252,21 @@ class Spotify(Plugin):
             if np and np.get("title"):
                 track = np
                 if not np.get("playing"):
-                    label = ctx.t("Paused", "Pausiert")
+                    label, state = ctx.t("Paused", "Pausiert"), "paused"
             else:
                 track = self._last["track"] or self._recent(ctx)
-                label = ctx.t("Recently played", "Zuletzt gehört")
+                label, state = ctx.t("Recently played", "Zuletzt gehört"), "recent"
         if not track:
             return ctx.message(ctx.t("Nothing playing", "Gerade läuft nichts"),
                                ctx.t("The cover appears as soon as music plays.",
                                      "Sobald Musik spielt, erscheint hier das Cover."))
         cover = track.get("cover") or (ctx.fetch_image(track["image"]) if track.get("image") else None)
+        data = dict(track, cover=cover, state=state)
+        from inkyframe import layouts
+        v = self.view(ctx, data)
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         side = ctx.H
         img, d = ctx.canvas(WHITE)
         if ctx.settings.get("layout") == "cover" and cover:

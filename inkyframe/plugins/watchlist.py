@@ -24,6 +24,16 @@ def fmt_num(v, lang):
     return number(v, lang)
 
 
+def spark_points(values, x, y, w, h):
+    """Sparkline of a series scaled into the box (x, y, w, h) – list of (px, py), lowest value at the bottom."""
+    if not values:
+        return []
+    lo, hi = min(values), max(values)
+    rng = (hi - lo) or 1
+    n = max(len(values) - 1, 1)
+    return [(x + i / n * w, y + h - (v - lo) / rng * h) for i, v in enumerate(values)]
+
+
 class Watchlist(Plugin):
     id = "watchlist"
     name = {"en": "Watchlist", "de": "Watchlist"}
@@ -75,11 +85,50 @@ class Watchlist(Plugin):
         return [mk("DAX", 19850, 0.03, 0.012, 0.84), mk("MSCI World", 101.4, 0.02, 0.008, 0.31),
                 mk("Apple", 228.3, -0.04, 0.02, -1.12), mk("Siemens Energy", 54.2, 0.09, 0.03, 2.45)]
 
+    def view(self, ctx, data):
+        """Display-ready facts for the design layouts (docs/views/watchlist.md)."""
+        days = ctx.settings.get("days", 30)
+        items = []
+        for it in data:
+            series = it.get("series") or []
+            row = {"label": it["label"], "error": it.get("error") or "", "ok": False,
+                   "dates": [t for t, _ in series], "values": [v for _, v in series]}
+            if not row["error"] and len(series) >= 2:
+                vals = row["values"]
+                last, prev, first = vals[-1], vals[-2], vals[0]
+                ch = (last - prev) / prev * 100 if prev else 0
+                per = (last - first) / first * 100 if first else 0
+                sign = lambda p: "+" if p > 0 else ""
+                row.update(
+                    ok=True, last=last, prev=prev, first=first, last_date=series[-1][0],
+                    last_text=fmt_num(last, ctx.lang),
+                    change=ch, change_text=f"{sign(ch)}{ctx.num(ch)} %",
+                    direction="up" if ch > 0 else "down" if ch < 0 else "flat",
+                    color="green" if ch > 0 else "red" if ch < 0 else "black",
+                    period_change=per, period_text=f"{sign(per)}{ctx.num(per)} %",
+                    min=min(vals), max=max(vals))
+            items.append(row)
+        src = "Alpha Vantage" if ctx.settings.get("provider") == "alphavantage" else "Stooq"
+        return {
+            "title": "Watchlist", "name": self.display_name(ctx.lang),
+            "subtitle": ctx.t("Last close · change · {n} days", "Letzter Schluss · Änderung · {n} Tage", n=days),
+            "days": int(days), "count": len(items), "items": items,
+            "source": src, "now_text": f"{ctx.now:%H:%M}", "today": ctx.today,
+            "place": ctx.location.get("name", ""),
+            "footer": ctx.t("Source: {s} · delayed · {t}", "Quelle: {s} · verzögert · Stand {t}", s=src, t=f"{ctx.now:%H:%M}"),
+        }
+
     def render(self, ctx, data=None):
         items = data if data is not None else self.fetch(ctx)
         if not items:
             return ctx.message(ctx.t("Watchlist is empty", "Watchlist ist leer"),
                                ctx.t("Add symbols under Plugins → Watchlist.", "Symbole unter Plugins → Watchlist eintragen."))
+        data = items
+        from inkyframe import layouts
+        v = self.view(ctx, data)
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         img, d = ctx.canvas()
         y = ctx.header(d, "Watchlist", ctx.t("Last close · change · {n} days", "Letzter Schluss · Änderung · {n} Tage",
                                              n=ctx.settings.get("days", 30)))

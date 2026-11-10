@@ -6,6 +6,7 @@ from inkyframe import gfx
 from inkyframe.gfx import BLACK, GREEN, RED, WHITE, YELLOW
 from inkyframe.plugin import Plugin, Setting
 
+NAMES = {GREEN: "green", YELLOW: "yellow", RED: "red", BLACK: "black"}
 SIG = {2: (("green", "grün"), GREEN), 1: (("yellow", "gelb"), YELLOW), 0: (("red", "rot"), RED),
        -1: (("red · grid congestion", "rot · Netzengpass"), RED)}
 
@@ -47,9 +48,103 @@ class GridSignal(Plugin):
         return {"unix_seconds": ts, "share": share,
                 "signal": [2 if s > 75 else (1 if s > 50 else 0) for s in share]}
 
+    def view(self, ctx, data):
+        """Display-ready facts for the studio layouts – see docs/views/grid.md."""
+        now = ctx.now.astimezone()
+        pts = [(dt.datetime.fromtimestamp(t).astimezone(), s or 0, g if g is not None else 0)
+               for t, s, g in zip(data["unix_seconds"], data["share"], data["signal"])]
+        today0 = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        tomorrow0 = today0 + dt.timedelta(days=1)
+        cur = min(pts, key=lambda p: abs((p[0] - now).total_seconds())) if pts else None
+
+        def col(sig):
+            return NAMES[SIG.get(sig, (None, BLACK))[1]]
+
+        def name(sig):
+            en, de = SIG.get(sig, (("?", "?"), BLACK))[0]
+            return ctx.t(en, de)
+
+        shares, signals = [None] * 96, [None] * 96           # today in quarter hours
+        for p in pts:
+            if today0 <= p[0] < tomorrow0:
+                i = (p[0].hour * 60 + p[0].minute) // 15
+                shares[i], signals[i] = round(p[1], 1), p[2]
+        hours = []
+        for h in range(24):
+            sh = [x for x in shares[h * 4:h * 4 + 4] if x is not None]
+            sg = [x for x in signals[h * 4:h * 4 + 4] if x is not None]
+            low = min(sg) if sg else None
+            hours.append({"hour": h, "share": round(sum(sh) / len(sh)) if sh else None, "signal": low,
+                          "color": col(low) if sg else None})
+        segments = []                                         # runs of the same colour over the day
+        for i, sg in enumerate(signals):
+            if sg is None:
+                continue
+            c = col(sg)
+            if segments and segments[-1]["end"] == i / 4 and segments[-1]["color"] == c:
+                segments[-1]["end"] = (i + 1) / 4
+            else:
+                segments.append({"start": i / 4, "end": (i + 1) / 4, "signal": sg, "color": c, "name": name(sg)})
+
+        def hhmm(x):
+            return f"{int(x):02d}:{int(round(x % 1 * 60)):02d}"
+
+        for sgm in segments:
+            sgm["from"], sgm["to"] = hhmm(sgm["start"]), hhmm(sgm["end"])
+            sgm["now"] = sgm["start"] <= now.hour + now.minute / 60 < sgm["end"]
+
+        best, best_text = None, ""
+        b = best_window(pts, now, tomorrow0)
+        if b:
+            best_text = ctx.t("Best 3 hours today: from {t} (avg {p} %)", "Beste 3 Stunden heute: ab {t} Uhr (Ø {p} %)",
+                              t=f"{b[0]:%H:%M}", p=round(b[1]))
+            day = "today"
+        else:
+            b = best_window(pts, tomorrow0, tomorrow0 + dt.timedelta(days=1))
+            if b:
+                best_text = ctx.t("Best 3 hours tomorrow: from {t} (avg {p} %)",
+                                  "Beste 3 Stunden morgen: ab {t} Uhr (Ø {p} %)", t=f"{b[0]:%H:%M}", p=round(b[1]))
+                day = "tomorrow"
+        if b:
+            start = b[0].hour + b[0].minute / 60
+            best = {"day": day, "time": f"{b[0]:%H:%M}", "to": f"{b[0] + dt.timedelta(hours=3):%H:%M}",
+                    "start": start, "end": start + 3, "avg": round(b[1])}
+        known = [x for x in shares if x is not None]
+        active = cur[2] if cur else None
+        return {
+            "title": ctx.t("Grid signal", "Stromampel"),
+            "subtitle": ctx.t("Share of renewables in electricity consumption",
+                              "Anteil erneuerbarer Energien am Verbrauch"),
+            "signal": active, "color": col(active) if cur else None, "signal_name": name(active) if cur else "",
+            "congestion": active == -1,
+            "share": round(cur[1]) if cur else None, "share_text": f"{round(cur[1])} %" if cur else "",
+            "now_label": ctx.t("now", "jetzt"),
+            "lights": [{"color": c, "on": bool(cur) and (active == sig or (sig == 0 and active == -1))}
+                       for sig, c in ((0, "red"), (1, "yellow"), (2, "green"))],
+            "shares": shares, "signals": signals,
+            "colors": [col(x) if x is not None else None for x in signals],
+            "hours": hours, "segments": segments,
+            "scale_max": max(110, max(known)) if known else 110,
+            "share_min": round(min(known)) if known else None, "share_max": round(max(known)) if known else None,
+            "now": now, "time": f"{now:%H:%M}", "now_pos": (now.hour * 60 + now.minute) / 1440,
+            "now_index": (now.hour * 60 + now.minute) // 15,
+            "best": best, "best_text": best_text,
+            "source": ctx.t("Source: Energy-Charts / Fraunhofer ISE · {t}",
+                            "Quelle: Energy-Charts / Fraunhofer ISE · Stand {t}", t=f"{now:%H:%M}"),
+            "country": str(ctx.settings.get("country") or "de").upper(),
+            "postal_code": str(ctx.settings.get("postal_code") or "").strip(),
+            "place": ctx.location.get("name", ""),
+            "today": ctx.today, "date": ctx.date(ctx.today, year=True),
+        }
+
     def render(self, ctx, data=None):
         now = ctx.now.astimezone()
         data = data or self.fetch(ctx)
+        from inkyframe import layouts
+        v = self.view(ctx, data)
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         pts = [(dt.datetime.fromtimestamp(t).astimezone(), s or 0, g if g is not None else 0)
                for t, s, g in zip(data["unix_seconds"], data["share"], data["signal"])]
         img, d = ctx.canvas()

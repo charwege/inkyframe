@@ -94,11 +94,50 @@ class Birthdays(Plugin):
         return [mk("Anna", 3, 1988), mk("Grandpa", 11, 1946), mk("Ben", 26, None), mk("Clara", 40, 2019),
                 mk("Mia", 58, 1995)]
 
+    def view(self, ctx, data):
+        """Display-ready facts for the design layouts (docs/views/birthdays.md)."""
+        today = ctx.today
+        people = []
+        for dd, b in sorted(((next_date(b, today), b) for b in data), key=lambda x: x[0]):
+            days = (dd - today).days
+            age = dd.year - b["year"] if b.get("year") else None
+            when = ctx.t("Today", "Heute") if days == 0 else ctx.t("tomorrow", "morgen") if days == 1 \
+                else ctx.t("in {n} days", "in {n} Tagen", n=days)
+            people.append({
+                "name": b["name"], "days": days, "date": dd, "year": b.get("year"),
+                "date_long": ctx.date(dd), "date_short": ctx.date(dd, "short"),
+                "weekday": C.weekday(dd, ctx.lang), "day": dd.day, "month": C.month(dd, ctx.lang),
+                "age": age, "age_text": ctx.t("turns {n}", "wird {n}", n=age) if age is not None else "",
+                "when": when, "when_short": ctx.t("in {n} d", "in {n} T.", n=days),
+            })
+        celebs = [p for p in people if p["days"] == 0]
+        ages = [f"{p['name']}: {p['age']}" for p in celebs if p["age"] is not None]
+        festive_line = ""
+        if ages:
+            festive_line = ctx.t("turns {n}", "wird {n}", n=ages[0].split(": ")[1]) if len(ages) == 1 else ", ".join(ages)
+        return {
+            "title": ctx.t("Birthdays", "Geburtstage"), "subtitle": ctx.t("coming up", "demnächst"),
+            "place": ctx.location.get("name", ""), "today": today,
+            "date_long": ctx.date(today), "date_short": ctx.date(today, "short"),
+            "count": len(people), "people": people,
+            "first": people[0], "others": people[1:5],
+            "festive": bool(celebs), "celebrants": celebs,
+            "festive_title": ctx.t("Happy birthday", "Alles Gute zum Geburtstag"),
+            "festive_names": " & ".join(p["name"] for p in celebs) + "!" if celebs else "",
+            "festive_line": festive_line,
+        }
+
     def render(self, ctx, data=None):
         people = data if data is not None else self.people(ctx)
         if not people:
             return ctx.message(ctx.t("No birthdays yet", "Noch keine Geburtstage"),
                                ctx.t("Add them under Plugins → Birthdays.", "Unter Plugins → Geburtstage eintragen."))
+        data = people
+        from inkyframe import layouts
+        v = self.view(ctx, data)
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         today = ctx.today
         upcoming = sorted(((next_date(b, today), b) for b in people), key=lambda x: x[0])
         img, d = ctx.canvas()

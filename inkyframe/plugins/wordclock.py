@@ -63,6 +63,28 @@ def words_for(t, lang="de"):
     return cells, _span(r, c, n)
 
 
+def lit_words(t, lang="de"):
+    """The lit words in reading order: [{"text": "FÜNF", "row": 0, "col": 7, "len": 4, "hour": False}, …]."""
+    m5 = t.minute // 5
+    if lang == "en":
+        grid, words, hours = EN_GRID, EN_W, EN_H
+        lit = ["IT", "IS"] + EN_T[m5] + (["OCLOCK"] if m5 == 0 else [])
+        hour = t.hour % 12 + (1 if m5 >= 7 else 0)
+    else:
+        grid, words, hours = DE_GRID, DE_W, DE_H
+        lit = ["ES", "IST"] + DE_T[m5] + (["UHR"] if m5 == 0 else [])
+        hour = t.hour % 12 + (1 if m5 >= 5 else 0)
+    hour = hour % 12 or 12
+    spans = [words[w] + (False,) for w in lit]
+    r, c, n = hours[hour]
+    if lang != "en" and m5 == 0 and hour == 1:
+        n = 3                              # "ES IST EIN UHR"
+    spans.append((r, c, n, True))
+    return [{"text": grid[r][c:c + n], "row": r, "col": c, "len": n, "hour": h} for r, c, n, h in sorted(spans)]
+
+
+COLOR_NAMES = {BLACK: "black", WHITE: "white", RED: "red"}
+
 STYLES = {
     #               background, other letters, time, hour
     "dark":       (BLACK, WHITE, RED, RED),      # black, time in red, other letters white
@@ -142,7 +164,46 @@ class WordClock(Plugin):
     def sample(self, ctx):
         return {"offline": True}      # needs no data – lets previews/CI render it
 
+    def view(self, ctx, data=None):
+        """Display-ready facts for the studio layouts – see docs/views/wordclock.md."""
+        now, ui = ctx.now, ctx.lang
+        style = ctx.settings.get("style", "dark")
+        style = style if style in STYLES else "dark"
+        bg, off, on, hour_col = STYLES[style]
+        lang = self._grid_lang(ctx)
+        grid = EN_GRID if lang == "en" else DE_GRID
+        cells, hour_cells = words_for(now, lang)
+        words = lit_words(now, lang)
+        spoken = [w["text"].lower().replace("oclock", "o’clock") for w in words]
+        m5 = (now.minute // 5) * 5
+        ph = C.moon_phase(now)
+        return {
+            "title": self.display_name(ui), "grid_lang": lang,
+            "grid": list(grid), "rows": len(grid), "cols": len(grid[0]),
+            "time_cells": sorted(cells - hour_cells), "hour_cells": sorted(hour_cells),
+            "lit": sorted(cells | hour_cells),
+            "words": words,
+            "phrase": " ".join(spoken).capitalize(), "phrase_time": " ".join(spoken[2:]),
+            "hour_word": next((w["text"] for w in words if w["hour"]), ""),
+            "hour": now.hour, "minute": m5, "time": f"{now.hour:02d}:{m5:02d}",
+            "style": style, "bg": COLOR_NAMES[bg],
+            "off": off if off in ("dim", None) else COLOR_NAMES[off],
+            "on": COLOR_NAMES[on], "hour_color": COLOR_NAMES[hour_col],
+            "now": now, "today": now.date(),
+            "weekday": C.weekday(now, ui), "day": now.day, "month": C.month(now, ui), "year": now.year,
+            "date": ctx.date(now.date(), year=True),
+            "week": now.isocalendar()[1], "day_of_year": now.timetuple().tm_yday,
+            "special": C.is_special(now.date(), ctx.location.get("holidays", "none")),
+            "phase": ph, "moon": C.moon_name(ph, ui),
+            "place": ctx.location.get("name", ""),
+        }
+
     def render(self, ctx, data=None):
+        from inkyframe import layouts
+        v = self.view(ctx, data)
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         bg, off, on, hour_col = STYLES.get(ctx.settings.get("style", "dark"), STYLES["dark"])
         lang = self._grid_lang(ctx)
         grid = EN_GRID if lang == "en" else DE_GRID

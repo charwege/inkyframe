@@ -41,6 +41,47 @@ def _sq(name):
     return "abcdefgh".index(name[0]), int(name[1]) - 1
 
 
+def draw_piece(d, piece, cx, cy, size, ink=BLACK, paper=WHITE):
+    """Draw one chess piece centred in a square of `size` px around (cx, cy).
+
+    piece: FEN letter – upper case = white ("K Q R B N P"), lower case = black; "" draws nothing.
+    White pieces are `paper`-filled with an `ink` outline, black pieces solid `ink`.
+    Uses the bundled symbol font, so it works in every design (design fonts have no chess glyphs).
+    """
+    if not piece:
+        return
+    pf = gfx.font("symbols", int(size * 0.86))
+    p = piece.lower()
+    bbox = d.textbbox((0, 0), GLYPH[p], font=pf, anchor="mm")
+    pos = (cx, cy + (bbox[1] + bbox[3]) // -2 + 0)
+    if piece.isupper():   # white piece: white fill + black outline
+        d.text(pos, GLYPH[p], font=pf, fill=paper, anchor="mm")
+        d.text(pos, OUTLINE[p], font=pf, fill=ink, anchor="mm")
+    else:
+        d.text(pos, GLYPH[p], font=pf, fill=ink, anchor="mm")
+
+
+def board_rows(fen, flip=False):
+    """8×8 list of piece letters ("" = empty) as shown on screen: row 0 is the top row.
+
+    flip=False: white at the bottom (top row = rank 8, left column = file a);
+    flip=True: black at the bottom (top row = rank 1, left column = file h).
+    """
+    rows = []
+    for row in fen.split()[0].split("/"):
+        cells = []
+        for ch in row:
+            cells += [""] * int(ch) if ch.isdigit() else [ch]
+        rows.append(cells)
+    return [r[::-1] for r in rows[::-1]] if flip else rows
+
+
+def cell_of(square, flip=False):
+    """(row, col) in board_rows() of a square name like "d3"."""
+    f, r = _sq(square)
+    return (r, 7 - f) if flip else (7 - r, f)
+
+
 def draw_board(d, fen, x0, y0, size, flip, last=None, dark=GREEN, coords=True):
     s = size // 8
     rows = fen.split()[0].split("/")
@@ -55,7 +96,6 @@ def draw_board(d, fen, x0, y0, size, flip, last=None, dark=GREEN, coords=True):
             d.rectangle((x, y, x + s - 1, y + s - 1), fill=col)
     d.rectangle((x0 - 2, y0 - 2, x0 + 8 * s + 1, y0 + 8 * s + 1), outline=BLACK, width=2)
 
-    pf = gfx.font("symbols", int(s * 0.86))
     for rank_idx, row in enumerate(rows):
         rank = 7 - rank_idx
         file_ = 0
@@ -64,15 +104,7 @@ def draw_board(d, fen, x0, y0, size, flip, last=None, dark=GREEN, coords=True):
                 file_ += int(ch)
                 continue
             c, r = (7 - file_, rank) if flip else (file_, 7 - rank)
-            cx, cy = x0 + c * s + s // 2, y0 + r * s + s // 2
-            p = ch.lower()
-            bbox = d.textbbox((0, 0), GLYPH[p], font=pf, anchor="mm")
-            pos = (cx, cy + (bbox[1] + bbox[3]) // -2 + 0)
-            if ch.isupper():   # white piece: white fill + black outline
-                d.text(pos, GLYPH[p], font=pf, fill=WHITE, anchor="mm")
-                d.text(pos, OUTLINE[p], font=pf, fill=BLACK, anchor="mm")
-            else:
-                d.text(pos, GLYPH[p], font=pf, fill=BLACK, anchor="mm")
+            draw_piece(d, ch, x0 + c * s + s // 2, y0 + r * s + s // 2, s)
             file_ += 1
     if coords:
         cf = gfx.font("sans", 14)
@@ -145,8 +177,53 @@ class ChessPuzzle(Plugin):
             white = not white
         return {"message": "  ".join(out), "link": f"https://lichess.org/training/{p['id']}"}
 
+    def view(self, ctx, data):
+        """Display-ready facts for the studio layouts – see docs/views/chess.md."""
+        s = ctx.settings
+        wtm = bool(data["white_to_move"])
+        flip = not wtm
+        last = tuple(data["last"]) if data.get("last") else None
+        side = ctx.t("White", "Weiß") if wtm else ctx.t("Black", "Schwarz")
+        keys = data["themes"][:4]
+        mate = next((k for k in keys if k.startswith("mateIn")), None)
+        rest = [theme_name(k, ctx.lang) for k in keys if k != mate]
+        n = (len(data["solution"]) + 1) // 2
+        sol = ctx.t("Solution: {n} move", "Lösung: {n} eigener Zug", n=n) if n == 1 \
+            else ctx.t("Solution: {n} moves", "Lösung: {n} eigene Züge", n=n)
+        dark = s.get("dark", "green")
+        board = board_rows(data["fen"], flip)
+        return {
+            "title": f'{ctx.t("Puzzle", "Puzzle")} {ctx.t("of the day", "des Tages")}',
+            "title_a": ctx.t("Puzzle", "Puzzle"), "title_b": ctx.t("of the day", "des Tages"),
+            "name": self.display_name(ctx.lang),
+            "id": data["id"], "url": f"lichess.org/training/{data['id']}", "source": "Lichess",
+            "fen": data["fen"], "board": board, "flip": flip,
+            "files": list("hgfedcba" if flip else "abcdefgh"),
+            "ranks": list("12345678" if flip else "87654321"),
+            "dark": dark if dark in DARK else "green", "show_coords": bool(s.get("show_coords", True)),
+            "last": last, "last_cells": [cell_of(q, flip) for q in last] if last else [],
+            "last_text": f"{last[0]} – {last[1]}" if last else "",
+            "white_to_move": wtm, "side": side,
+            "to_move": ctx.t("{s} to move", "{s} am Zug", s=side),
+            "move_number": data.get("start_move"),
+            "mate": theme_name(mate, ctx.lang) if mate else "",
+            "mate_in": int(mate[6:]) if mate and mate[6:].isdigit() else None,
+            "themes": rest, "themes_text": " · ".join(rest),
+            "rating": data.get("rating") or None,
+            "rating_text": ctx.t("Rating {r}", "Wertung {r}", r=data["rating"]) if data.get("rating") else "",
+            "moves": n, "solution_text": sol,
+            "hint": ctx.t("Solution in the web app", "Lösung in der Web-App"),
+            "now": ctx.now, "today": ctx.today, "date": ctx.date(ctx.today, year=True),
+            "time": f"{ctx.now:%H:%M}", "place": ctx.location.get("name", ""),
+        }
+
     def render(self, ctx, data=None):
         data = data or self.puzzle(ctx)
+        from inkyframe import layouts
+        v = self.view(ctx, data)
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         img, d = ctx.canvas()
         s = ctx.settings
         size = 432

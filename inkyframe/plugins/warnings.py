@@ -86,6 +86,52 @@ class WeatherWarnings(Plugin):
             "description_de": "Es treten Sturmböen mit Geschwindigkeiten um 75 km/h (21 m/s, 40 kn, Bft 9) aus westlicher Richtung auf.",
             "onset": now.isoformat(), "expires": (now + dt.timedelta(hours=9)).isoformat()}]}
 
+    def view(self, ctx, data):
+        """Display-ready facts for the studio layouts (at least one alert) – see docs/views/warnings.md."""
+        from ._calendar import weekday_short
+        de, now = ctx.lang == "de", ctx.now.astimezone()
+
+        def one(a):
+            sev = a.get("severity") if a.get("severity") in LEVELS else "minor"
+            en, de_txt = LEVEL_TEXT[sev]
+            on, ex = _parse(a.get("onset")), _parse(a.get("expires"))
+            on_txt = f"{weekday_short(on, ctx.lang)} {on:%H:%M}" if on else ""
+            ex_txt = f"{weekday_short(ex, ctx.lang)} {ex:%H:%M}" if ex else ""
+            span = ""
+            if on and ex:
+                b_txt = f"{ex:%H:%M}" if ex.date() == on.date() else ex_txt
+                span = ctx.t("{a} – {b}", "{a} bis {b} Uhr", a=on_txt, b=b_txt)
+            progress = None
+            if on and ex and ex > on:
+                progress = round(min(1.0, max(0.0, (now - on) / (ex - on))), 3)
+            return {
+                "severity": sev, "level": LEVELS.index(sev) + 1, "level_text": ctx.t(en, de_txt),
+                "color": "yellow" if sev == "minor" else "red",
+                "event": a.get("event_de" if de else "event_en") or a.get("event_en") or "",
+                "headline": a.get("headline_de" if de else "headline_en") or a.get("headline_en") or "",
+                "description": a.get("description_de" if de else "description_en") or a.get("headline_en") or "",
+                "instruction": a.get("instruction_de" if de else "instruction_en") or a.get("instruction_en") or "",
+                "onset": on, "expires": ex, "onset_text": on_txt, "expires_text": ex_txt, "span": span,
+                "active": bool(on is None or on <= now), "progress": progress,
+            }
+
+        alerts = [one(a) for a in data["alerts"]]
+        more = [x["event"] for x in alerts[1:4]]
+        v = dict(alerts[0])
+        v.update({
+            "title": ctx.t("Weather warnings", "Wetterwarnungen"), "place": data["place"],
+            "place_span": f"{data['place']} · {v['span']}",
+            "levels": len(LEVELS), "level_names": [ctx.t(*LEVEL_TEXT[k]) for k in LEVELS],
+            "alerts": alerts, "count": len(alerts), "more": more,
+            "more_text": ctx.t("Also: {m}", "Außerdem: {m}", m=", ".join(more)) if more else "",
+            "source": "Deutscher Wetterdienst", "updated": f"{ctx.now:%H:%M}",
+            "footer": ctx.t("Deutscher Wetterdienst via Bright Sky · updated {t}",
+                            "Deutscher Wetterdienst über Bright Sky · Stand {t}", t=f"{ctx.now:%H:%M}"),
+            "now": ctx.now, "today": ctx.today, "date_text": ctx.date(ctx.today),
+            "weekday_short": weekday_short(ctx.today, ctx.lang),
+        })
+        return v
+
     def render(self, ctx, data=None):
         data = data or self.alerts(ctx)
         alerts, de = data["alerts"], ctx.lang == "de"
@@ -101,6 +147,11 @@ class WeatherWarnings(Plugin):
                                 t=f"{ctx.now:%H:%M}"))
             return img
 
+        from inkyframe import layouts
+        v = self.view(ctx, data)
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         a = alerts[0]
         sev = a.get("severity", "minor")
         col = ctx.YELLOW if sev == "minor" else ctx.RED

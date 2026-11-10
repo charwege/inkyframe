@@ -69,6 +69,11 @@ def generate(seed, level="medium"):
     return puzzle, full
 
 
+def rows(puzzle):
+    """Flat list of 81 numbers -> 9 rows of 9 (0 = empty cell)."""
+    return [list(puzzle[r * 9:(r + 1) * 9]) for r in range(9)]
+
+
 class Sudoku(Plugin):
     id = "sudoku"
     name = {"en": "Sudoku of the Day", "de": "Sudoku des Tages"}
@@ -102,8 +107,35 @@ class Sudoku(Plugin):
     def sample(self, ctx):
         return generate("inkyframe-sample", "medium")
 
+    def view(self, ctx, data):
+        """Display-ready facts for the design layouts (docs/views/sudoku.md)."""
+        puzzle = list(data[0])
+        level = ctx.settings.get("level", "medium")
+        if level not in LEVEL_NAMES:
+            level = "medium"
+        givens = sum(1 for v in puzzle if v)
+        return {
+            "title": "Sudoku", "subtitle": ctx.t("of the day", "des Tages"),
+            "name": self.display_name(ctx.lang),
+            "grid": rows(puzzle), "puzzle": puzzle,
+            "givens": givens, "empty": 81 - givens,
+            "givens_text": ctx.t("{n} givens", "{n} Vorgaben", n=givens),
+            "level": level, "level_no": {"easy": 1, "medium": 2, "hard": 3}[level], "level_max": 3,
+            "level_name": ctx.t(*LEVEL_NAMES[level]),
+            "weekday": C.weekday(ctx.today, ctx.lang), "date": ctx.date(ctx.today, weekday=False),
+            "date_long": ctx.date(ctx.today), "today": ctx.today,
+            "hint": ctx.t("Solution in the web app", "Lösung in der Web-App"),
+            "place": ctx.location.get("name", ""),
+        }
+
     def render(self, ctx, data=None):
-        puzzle, _ = data or self.puzzle(ctx)
+        data = data or self.puzzle(ctx)
+        puzzle, _ = data
+        from inkyframe import layouts
+        v = self.view(ctx, data)
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         img, d = ctx.canvas()
         cell = 48
         size = cell * 9

@@ -86,12 +86,53 @@ class Waste(Plugin):
         names = [rec, gen, ctx.t("Paper", "Altpapier"), ctx.t("Organic waste", "Bioabfall"), gen, rec]
         return [(t + dt.timedelta(days=n), names[i]) for i, n in enumerate((1, 1, 4, 8, 15, 15))]
 
+    def view(self, ctx, data):
+        """Display-ready facts for the studio layouts – see docs/views/waste.md."""
+        today, lang = ctx.today, ctx.lang
+
+        def item(dd, s):
+            days = (dd - today).days
+            return {"name": s, "color": bin_color(s), "date": dd, "days": days,
+                    "weekday": C.weekday(dd, lang), "weekday_short": C.weekday_short(dd, lang),
+                    "date_short": ctx.date(dd, "short"), "date_long": ctx.date(dd),
+                    "date_text": f"{C.weekday_short(dd, lang)}, {ctx.date(dd, 'short')}",
+                    "in_text": ctx.t("in {n} days", "in {n} Tagen", n=days)}
+
+        items = [item(dd, s) for dd, s in data]
+        soon = None
+        first = [it for it in items if it["days"] in (0, 1)]
+        if first:
+            when = first[0]["date"]
+            group = [it for it in first if it["date"] == when]
+            soon = {k: group[0][k] for k in ("date", "days", "weekday", "weekday_short", "date_short",
+                                             "date_long", "date_text")}
+            soon.update(label=ctx.t("Today", "Heute") if when == today else ctx.t("Tomorrow", "Morgen"),
+                        is_today=when == today, items=[{"name": it["name"], "color": it["color"]} for it in group],
+                        names=[it["name"] for it in group], names_text=" + ".join(it["name"] for it in group))
+        n = int(ctx.settings.get("days", 21) or 21)
+        return {
+            "title": ctx.t("Waste collection", "Müllabfuhr"), "place": ctx.location.get("name", ""),
+            "today": today, "date_text": ctx.date(today), "date_short": ctx.date(today, "short"),
+            "weekday": C.weekday(today, lang), "weekday_short": C.weekday_short(today, lang),
+            "week": today.isocalendar()[1],
+            "soon": soon, "rows": [it for it in items if not soon or it["date"] != soon["date"]],
+            "items": items, "look_ahead": n,
+            "empty_text": ctx.t("No collections in the next {n} days", "Keine Abholung in den nächsten {n} Tagen",
+                                n=ctx.settings.get("days", 21)),
+        }
+
     def render(self, ctx, data=None):
         evs = data if data is not None else self.events(ctx)
         if evs is None:
             return ctx.message(ctx.t("Add your collection calendar", "Abfuhrkalender eintragen"),
                                ctx.t("Paste the iCal link in the web app under Plugins → Waste Collection.",
                                      "iCal-Link in der Web-App unter Plugins → Müllabfuhr einfügen."))
+        if evs:                                    # "no collections" stays the regular screen
+            from inkyframe import layouts
+            v = self.view(ctx, evs)
+            special = layouts.render(ctx, self.id, v)
+            if special is not None:
+                return special
         img, d = ctx.canvas()
         y = ctx.header(d, ctx.t("Waste collection", "Müllabfuhr"))
         today, lang = ctx.today, ctx.lang

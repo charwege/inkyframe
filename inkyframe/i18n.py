@@ -19,7 +19,11 @@ _cache = {}
 def locale(lang):
     lang = lang if lang in ORDER else "en"
     if lang not in _cache:
-        _cache[lang] = importlib.import_module(f"inkyframe.locales.{lang}")
+        mod = importlib.import_module(f"inkyframe.locales.{lang}")
+        from . import layouts
+        for k, v in layouts.extra_strings(lang).items():      # texts of the studio layouts
+            mod.STRINGS.setdefault(k, v)
+        _cache[lang] = mod
     return _cache[lang]
 
 

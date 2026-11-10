@@ -22,6 +22,37 @@ def streak(days_done, today):
     return n
 
 
+def best_streak(days_done):
+    """Longest run of consecutive days in a set of ISO dates."""
+    best = 0
+    for k in days_done:
+        d = dt.date.fromisoformat(k)
+        if (d - dt.timedelta(days=1)).isoformat() in days_done:
+            continue                                  # not the start of a run
+        n = 1
+        while (d + dt.timedelta(days=n)).isoformat() in days_done:
+            n += 1
+        best = max(best, n)
+    return best
+
+
+def week_grid(days_done, today, weeks):
+    """Calendar grid like the regular screen: `weeks` columns (oldest first, the last one is the current
+    week), each a list of 7 flags Monday…Sunday – True done, False not done, None = day after today."""
+    start = today - dt.timedelta(days=today.weekday() + 7 * (weeks - 1))
+    grid = []
+    for w in range(weeks):
+        col = []
+        for wd in range(7):
+            day = start + dt.timedelta(days=w * 7 + wd)
+            col.append(None if day > today else day.isoformat() in days_done)
+        grid.append(col)
+    return grid
+
+
+PALETTE = ["green", "blue", "red", "black", "green", "blue"]      # colour of the 1st … 6th habit
+
+
 class Habits(Plugin):
     id = "habits"
     name = {"en": "Habit Tracker", "de": "Gewohnheiten"}
@@ -77,12 +108,46 @@ class Habits(Plugin):
             log[day] = [h for j, h in enumerate(habits) if rnd.random() < (0.85 if back < 9 else 0.6 - j * 0.08)]
         return {"habits": habits, "log": log}
 
+    def view(self, ctx, data):
+        """Display-ready facts for the studio layouts – see docs/views/habits.md."""
+        today, lang = ctx.today, ctx.lang
+        log = data["log"]
+        weeks = int(ctx.settings.get("weeks", 12) or 12)
+        unit = ctx.t("d", "T")
+        items = []
+        for i, h in enumerate(data["habits"][:6]):
+            done = {k for k, v in log.items() if h in v}
+            sk = streak(done, today)
+            days = [(today - dt.timedelta(days=41 - n)).isoformat() in done for n in range(42)]
+            items.append({
+                "name": h, "color": PALETTE[i], "streak": sk, "streak_text": f"{sk} {unit}",
+                "hot": sk >= 7, "best": best_streak(done), "done_today": today.isoformat() in done,
+                "days": days, "done_count": sum(days), "rate": round(sum(days) / 42, 3),
+                "grid": week_grid(done, today, 6), "grid_all": week_grid(done, today, weeks),
+            })
+        return {
+            "title": ctx.t("Habits", "Gewohnheiten"), "today": today, "date_text": ctx.date(today),
+            "date_short": ctx.date(today, "short"), "weekday": C.weekday(today, lang),
+            "weekday_short": C.weekday_short(today, lang),
+            "weekday_letters": list(C.weekday_letters(lang)), "day_unit": unit,
+            "weeks": 6, "days": 42, "now": [5, today.weekday()], "weeks_all": weeks,
+            "start": today - dt.timedelta(days=today.weekday() + 35),
+            "best": max((it["best"] for it in items), default=0),
+            "best_streak": max((it["streak"] for it in items), default=0),
+            "habits": items,
+        }
+
     def render(self, ctx, data=None):
         habits = data["habits"] if data else habit_list(ctx)
         log = data["log"] if data else ctx.load_state().get("log", {})
         if not habits:
             return ctx.message(ctx.t("No habits yet", "Noch keine Gewohnheiten"),
                                ctx.t("Add some under Plugins → Habit Tracker.", "Unter Plugins → Gewohnheiten eintragen."))
+        from inkyframe import layouts
+        v = self.view(ctx, {"habits": habits, "log": log})
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
         weeks = int(ctx.settings.get("weeks", 12))
         img, d = ctx.canvas()
         ctx.header(d, ctx.t("Habits", "Gewohnheiten"), ctx.date(ctx.today))

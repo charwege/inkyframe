@@ -37,7 +37,8 @@ class ArtOfTheDay(Plugin):
             filters.append({"terms": {"artwork_type_id": [18, 13]}})   # print, drawing
         seed = int(hashlib.sha1(f"{ctx.today}{kind}".encode()).hexdigest(), 16)
         query = {"query": {"bool": {"filter": filters}}, "limit": 100, "page": seed % 10 + 1,
-                 "fields": ["id", "title", "artist_title", "artist_display", "date_display", "image_id"]}
+                 "fields": ["id", "title", "artist_title", "artist_display", "date_display", "image_id",
+                            "medium_display", "dimensions", "place_of_origin"]}
         res = ctx.fetch_json(API, ttl=12 * 3600, params={"params": json.dumps(query)}, headers=HEADERS)
         items = [a for a in res.get("data", []) if a.get("image_id")]
         if not items:
@@ -45,6 +46,8 @@ class ArtOfTheDay(Plugin):
         art = items[(seed // 10) % len(items)]
         return {"title": art.get("title") or "", "artist": art.get("artist_title")
                 or (art.get("artist_display") or "").split("\n")[0], "date": art.get("date_display") or "",
+                "medium": art.get("medium_display") or "", "dimensions": art.get("dimensions") or "",
+                "origin": art.get("place_of_origin") or "",
                 "image": ctx.fetch_image(IIIF.format(art["image_id"]), ttl=24 * 3600)}
 
     def sample(self, ctx):
@@ -60,14 +63,38 @@ class ArtOfTheDay(Plugin):
             d.polygon(pts + [(600, 450), (0, 450)], fill=col)
         return {"title": "Evening over the Hills", "artist": "Sample Painter", "date": "1889", "image": img}
 
+    def view(self, ctx, data):
+        """Display-ready facts for the studio layouts – see docs/views/art.md."""
+        art = data
+        pic = gfx.punch_for_eink(art["image"], saturation=float(ctx.settings.get("saturation", 1.3)))
+        today = ctx.today
+        return {
+            "title": ctx.t("Art of the day", "Kunst des Tages"),
+            "work": art.get("title") or "", "artist": art.get("artist") or "", "date": art.get("date") or "",
+            "caption": " · ".join(x for x in (art.get("artist"), art.get("date")) if x),
+            "medium": art.get("medium") or "", "dimensions": art.get("dimensions") or "",
+            "origin": art.get("origin") or "",
+            "image": pic, "width": pic.width, "height": pic.height,
+            "aspect": round(pic.width / pic.height, 3), "landscape": pic.width / pic.height > 1.25,
+            "museum": "Art Institute of Chicago", "museum_city": "Chicago",
+            "license": ctx.t("Public domain", "Gemeinfrei"),
+            "today": today, "date_text": ctx.date(today), "date_short": ctx.date(today, "short"),
+            "doy": today.timetuple().tm_yday,
+        }
+
     def render(self, ctx, data=None):
         art = data or self.pick(ctx)
         W, H = ctx.W, ctx.H
-        pic = gfx.punch_for_eink(art["image"], saturation=float(ctx.settings.get("saturation", 1.3)))
-        if ctx.settings.get("layout") == "full":
+        v = self.view(ctx, art)
+        pic = v["image"]
+        if ctx.settings.get("layout") == "full":       # "picture only" stays picture only in every design
             img, _ = ctx.canvas()
             img.paste(ctx.cover_fit(pic, W, H), (0, 0))
             return img
+        from inkyframe import layouts
+        special = layouts.render(ctx, self.id, v)
+        if special is not None:
+            return special
 
         img, d = ctx.canvas()
         landscape = pic.width / pic.height > 1.25
