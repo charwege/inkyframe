@@ -8,7 +8,7 @@ You don't need a Raspberry Pi to develop: everything renders to PNG on any compu
 ## 1. Set up (any computer)
 
 ```bash
-git clone https://github.com/<owner>/inkyframe.git && cd inkyframe
+git clone https://github.com/charwege/inkyframe.git && cd inkyframe
 python3 -m venv .venv && . .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install flask requests pillow chess pytest
 python -m inkyframe.dev new moonquote               # creates data/plugins/moonquote.py

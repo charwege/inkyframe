@@ -57,7 +57,7 @@ Your own `.ttf` files in `data/fonts/<design>/` (`serif.ttf`, `serif-bold.ttf`, 
 Enable SPI and I²C first (`sudo raspi-config` → Interface Options).
 
 ```bash
-git clone https://github.com/<owner>/inkyframe.git ~/inkyframe
+git clone https://github.com/charwege/inkyframe.git ~/inkyframe
 cd ~/inkyframe && bash install.sh
 ```
 Then open `http://<pi-name>.local:8080` on your phone (same Wi-Fi). Tip: *Add to Home Screen*.
