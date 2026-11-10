@@ -1,0 +1,17 @@
+[Unit]
+Description=inkyframe (web app + e-ink display)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/inkyframe
+# Python from the venv that has the Inky driver installed (install.sh fills in the paths)
+ExecStart=/home/pi/.virtualenvs/pimoroni/bin/python /home/pi/inkyframe/run.py
+Environment=PYTHONUNBUFFERED=1
+Environment=INKYFRAME_PORT=8080
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

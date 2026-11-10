@@ -1,0 +1,6 @@
+flask>=2.2
+requests
+pillow
+fonttools      # glyph fallback for theme fonts
+chess          # python-chess – chess puzzle plugin
+# inky[rpi]    # display driver – installed by install.sh on the Pi

@@ -1,0 +1,126 @@
+NAME = "Dansk"
+
+STRINGS = {
+    "Weather & Calendar": "Vejr og kalender", "Chess Puzzle": "Skakopgave", "Thought of the Day": "Dagens tanke",
+    "Spotify": "Spotify", "Grid Signal": "Strømmens trafiklys", "Word Clock": "Ordur", "Countdown": "Nedtælling",
+    "Art of the Day": "Dagens kunstværk", "Waste Collection": "Affaldsafhentning", "Weather Warnings": "Vejrvarsler",
+    "Guest Wi-Fi": "Gæste-wifi", "Habit Tracker": "Vaner", "Sudoku of the Day": "Dagens sudoku",
+    "Solar Power": "Solenergi", "Water Level": "Vandstand", "Birthdays": "Fødselsdage", "Watchlist": "Overvågningsliste",
+    "Clear": "Klart", "Mainly clear": "Overvejende klart", "Partly cloudy": "Delvis skyet", "Overcast": "Overskyet",
+    "Fog": "Tåge", "Rime fog": "Rimtåge", "Light drizzle": "Let støvregn", "Drizzle": "Støvregn",
+    "Heavy drizzle": "Kraftig støvregn", "Freezing drizzle": "Isslag", "Light rain": "Let regn", "Rain": "Regn",
+    "Heavy rain": "Kraftig regn", "Freezing rain": "Isregn", "Light snow": "Let sne", "Snow": "Sne",
+    "Heavy snow": "Kraftig sne", "Snow grains": "Kornsne", "Showers": "Byger", "Violent showers": "Kraftige byger",
+    "Snow showers": "Snebyger", "Thunderstorm": "Torden", "Thunderstorm, hail": "Torden med hagl",
+    "feels {t}°": "føles som {t}°", "Day: {h} h {m:02d} min": "Dag: {h} t {m:02d} min",
+    "Chance of rain · max {p} %": "Risiko for regn · maks. {p} %", "Updated {t}": "Opdateret {t}",
+    "New Year's Day": "Nytårsdag", "Good Friday": "Langfredag", "Easter Sunday": "Påskedag", "Easter Monday": "2. påskedag",
+    "Labour Day": "Arbejdernes kampdag", "Ascension Day": "Kristi himmelfartsdag", "Whit Sunday": "Pinsedag", "Whit Monday": "2. pinsedag",
+    "German Unity Day": "Tysklands genforeningsdag", "Christmas Day": "Juledag", "Boxing Day": "2. juledag",
+    "Reformation Day": "Reformationsdag", "Corpus Christi": "Kristi legemsfest", "All Saints' Day": "Allehelgensdag",
+    "Epiphany": "Helligtrekonger", "Assumption Day": "Marias himmelfart",
+    "Puzzle": "Dagens", "of the day": "opgave", "White": "Hvid", "Black": "Sort", "{s} to move": "{s} i trækket",
+    "Solution: {n} move": "Løsning: {n} træk", "Solution: {n} moves": "Løsning: {n} træk",
+    "Solution in the web app": "Løsningen står i webappen", "Rating {r}": "Rating {r}",
+    "Mate in 1": "Mat i 1", "Mate in 2": "Mat i 2", "Mate in 3": "Mat i 3", "Mate in 4": "Mat i 4", "Fork": "Gaffel",
+    "Pin": "Binding", "Sacrifice": "Offer", "Endgame": "Slutspil", "Middlegame": "Midtspil", "Opening": "Åbning",
+    "Short": "Kort", "Long": "Lang", "Advantage": "Fordel", "Crushing": "Knusende", "Kingside attack": "Kongefløjsangreb",
+    "Question of the day": "Dagens spørgsmål", "Thought of the day": "Dagens tanke",
+    "No entries yet – add your own in the web app?": "Ingen indslag endnu – tilføj dine egne i webappen?",
+    "Now playing": "Spiller nu", "Recently played": "Senest afspillet", "Paused": "Sat på pause", "Nothing playing": "Intet spiller",
+    "The cover appears as soon as music plays.": "Coveret vises, så snart der spiller musik.",
+    "Spotify is not connected yet": "Spotify er ikke forbundet endnu",
+    "Set it up in the web app under Plugins → Spotify.": "Sæt det op i webappen under Plugins → Spotify.",
+    "Grid signal": "Strømmens trafiklys", "Share of renewables in electricity consumption": "Andel vedvarende energi i elforbruget",
+    "now": "nu", "green": "grøn", "yellow": "gul", "red": "rød", "red · grid congestion": "rød · overbelastet net",
+    "Best 3 hours today: from {t} (avg {p} %)": "Bedste 3 timer i dag: fra {t} (gns. {p} %)",
+    "Best 3 hours tomorrow: from {t} (avg {p} %)": "Bedste 3 timer i morgen: fra {t} (gns. {p} %)",
+    "Source: Energy-Charts / Fraunhofer ISE · {t}": "Kilde: Energy-Charts / Fraunhofer ISE · {t}",
+    "days until": "dage til", "day until": "dag til", "days since": "dage siden", "Today!": "I dag!",
+    "Please set a valid date": "Angiv en gyldig dato", "Summer holidays": "Sommerferie",
+    "Art of the day": "Dagens kunstværk", "Public domain": "Fri af ophavsret",
+    "Waste collection": "Affaldsafhentning", "Tomorrow": "I morgen", "Today": "I dag", "in {n} days": "om {n} dage",
+    "Add your collection calendar": "Tilføj din affaldskalender",
+    "Paste the iCal link in the web app under Plugins → Waste Collection.": "Indsæt iCal-linket i webappen under Plugins → Affaldsafhentning.",
+    "No collections in the next {n} days": "Ingen afhentning de næste {n} dage",
+    "Recycling": "Plast og metal", "General waste": "Restaffald", "Paper": "Papir", "Organic waste": "Madaffald",
+    "Weather warnings": "Vejrvarsler", "No warnings right now": "Ingen varsler lige nu", "Also: {m}": "Desuden: {m}",
+    "Warning": "Varsel", "Severe weather": "Farligt vejr", "Severe weather warning": "Varsel om uvejr",
+    "Extreme weather warning": "Varsel om ekstremt vejr", "{a} – {b}": "{a} – {b}",
+    "Source: Deutscher Wetterdienst via Bright Sky · {t}": "Kilde: Deutscher Wetterdienst via Bright Sky · {t}",
+    "Deutscher Wetterdienst via Bright Sky · updated {t}": "Deutscher Wetterdienst via Bright Sky · opdateret {t}",
+    "Scan with your phone camera": "Scan med mobilens kamera", "Network": "Netværk",
+    "Password": "Adgangskode", "Wi-Fi not set up yet": "Wifi er ikke sat op endnu", "Guests": "Gæster",
+    "Enter network name and password under Plugins → Guest Wi-Fi.": "Angiv netværksnavn og adgangskode under Plugins → Gæste-wifi.",
+    "Welcome! Make yourself at home.": "Velkommen! Føl dig hjemme.",
+    "Habits": "Vaner", "d": "d", "No habits yet": "Ingen vaner endnu",
+    "Add some under Plugins → Habit Tracker.": "Tilføj nogle under Plugins → Vaner.",
+    "Read": "Læse", "Exercise": "Motion", "No phone after 10 pm": "Ingen mobil efter kl. 22", "Meditate": "Meditere",
+    "{n} givens": "{n} givne tal", "Easy": "Let", "Medium": "Middel", "Hard": "Svær",
+    "Solar power": "Solenergi", "right now": "lige nu", "today · approx. {e} € saved": "i dag · ca. {e} € sparet",
+    "{t} kWh in total": "{t} kWh i alt", "Solar source not set up": "Solkilde ikke sat op",
+    "Enter your OpenDTU address or Home Assistant details under Plugins → Solar Power.": "Angiv OpenDTU-adresse eller Home Assistant-oplysninger under Plugins → Solenergi.",
+    "Choose a gauge": "Vælg en målestation", "Search for a station under Plugins → Water Level.": "Søg en målestation under Plugins → Vandstand.",
+    "rising": "stigende", "falling": "faldende", "steady": "uændret", "level": "niveau", "mean water (MW)": "middelvandstand (MW)",
+    "Source: PEGELONLINE (WSV) · {t}": "Kilde: PEGELONLINE (WSV) · {t}",
+    "coming up": "snart", "Happy birthday": "Tillykke med fødselsdagen", "turns {n}": "fylder {n}", "tomorrow": "i morgen",
+    "in {n} d": "om {n} d", "No birthdays yet": "Ingen fødselsdage endnu",
+    "Add them under Plugins → Birthdays.": "Tilføj dem under Plugins → Fødselsdage.",
+    "Last close · change · {n} days": "Seneste lukkekurs · ændring · {n} dage", "Watchlist is empty": "Overvågningslisten er tom",
+    "Add symbols under Plugins → Watchlist.": "Tilføj symboler under Plugins → Overvågningsliste.",
+    "Source: {s} · delayed · {t}": "Kilde: {s} · forsinket · {t}",
+    "{n} is unavailable right now": "{n} er ikke tilgængelig lige nu",
+}
+
+WEEKDAYS = ["mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag", "søndag"]
+WEEKDAYS_SHORT = ["man", "tir", "ons", "tor", "fre", "lør", "søn"]
+WEEKDAY_LETTERS = "MTOTFLS"
+MONTHS = ["januar", "februar", "marts", "april", "maj", "juni", "juli", "august", "september", "oktober", "november", "december"]
+MONTHS_GEN = MONTHS
+MONTHS_SHORT = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"]
+FIRST_WEEKDAY = 0
+LONG_DATE = "{wd} den {d}. {mon}"
+LONG_DATE_NO_WD = "{d}. {mon}"
+LONG_DATE_YEAR = "{d}. {mon} {y}"
+SHORT_DATE = "{d}.{m}."
+DECIMAL, THOUSANDS = ",", "."
+QUOTE_MARKS = ("»", "«")
+MOON = ["Nymåne", "Tiltagende segl", "Første kvarter", "Tiltagende måne", "Fuldmåne",
+        "Aftagende måne", "Sidste kvarter", "Aftagende segl"]
+
+QUOTES = [
+    ("Det er ikke, fordi vi har kort tid, men fordi vi spilder meget af den.", "Seneca"),
+    ("Vi lider oftere i fantasien end i virkeligheden.", "Seneca"),
+    ("Lykken i dit liv afhænger af kvaliteten af dine tanker.", "Marcus Aurelius"),
+    ("Det er ikke tingene, der foruroliger mennesker, men deres meninger om tingene.", "Epiktet"),
+    ("Det er ikke nok at vide, man må anvende; det er ikke nok at ville, man må handle.", "Goethe"),
+    ("Man ser kun godt med hjertet. Det væsentlige er usynligt for øjnene.", "Antoine de Saint-Exupéry"),
+    ("En rejse på tusind mil begynder med et enkelt skridt.", "Laozi"),
+    ("Man kan ikke træde ned i den samme flod to gange.", "Heraklit"),
+    ("Livet forstås baglæns, men må leves forlæns.", "Søren Kierkegaard"),
+    ("Jeg ved, at jeg intet ved.", "Sokrates"),
+    ("Godt begyndt er halvt fuldendt.", "Aristoteles"),
+    ("Vores liv spildes på detaljer. Forenkl, forenkl.", "Henry David Thoreau"),
+]
+QUESTIONS = [
+    "Hvad glæder du dig til i dag – helt konkret?",
+    "Hvilket lille skridt i dag vil føles stort om et år?",
+    "Hvem kunne du oprigtigt takke i dag?",
+    "Hvad ville du gøre i dag, hvis du ikke var bange for resultatet?",
+    "Hvilken ene ting ville gøre i dag til en god dag?",
+    "Hvad kan du droppe i dag?",
+    "Hvad er du taknemmelig for lige nu, uden at tænke dig om?",
+    "Hvilken samtale har du skubbet foran dig?",
+    "Hvad gjorde du for første gang for nylig?",
+    "Hvordan ved du i aften, at det var en god dag?",
+    "Hvem har du ikke ringet til i alt for lang tid?",
+    "Hvad ville dit fremtidige jeg råde dig til i dag?",
+    "Hvor kan du være gavmild i dag?",
+    "Hvad er vigtigt for dig, men står ikke i nogen kalender?",
+    "Hvornår gjorde du sidst noget af ren nysgerrighed?",
+    "Hvad ville du sige til en ven i din situation?",
+    "Hvad overraskede dig i denne uge?",
+    "Hvad kan du gøre enklere i dag?",
+    "Hvilken lille glæde kan du give nogen i dag?",
+    "Hvad grinede du højt af for nylig?",
+]

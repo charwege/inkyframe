@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"   # Raspberry Pi OS Bookworm ships 3.11
+      - name: Install
+        run: |
+          sudo apt-get update && sudo apt-get install -y fonts-dejavu-core fonts-inter fonts-comic-neue || true
+          pip install flask requests pillow fonttools chess pytest ruff
+      - name: Lint
+        run: ruff check --select E9,F63,F7,F82,F401 inkyframe tests
+      - name: Plugin check
+        run: python -m inkyframe.dev check
+      - name: Tests
+        run: pytest -q
+      - name: Download design fonts
+        run: python -m inkyframe.fonts || true
+      - name: Render gallery (sample data, both languages, every design)
+        run: |
+          for t in $(python -c "from inkyframe.themes import THEMES; print(' '.join(THEMES))"); do
+            python -m inkyframe.dev render quote --sample --lang de --theme $t --out gallery/designs
+          done
+          python -m inkyframe.dev gallery --sample --lang en --out gallery
+          python -m inkyframe.dev gallery --sample --lang de --out gallery
+          python -m inkyframe.dev gallery --sample --lang de --theme modern --out gallery
+          python -m inkyframe.dev gallery --sample --lang de --theme playful --out gallery
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugin-previews
+          path: gallery/

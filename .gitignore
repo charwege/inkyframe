@@ -1,0 +1,10 @@
+# runtime data (settings incl. tokens, current image) – never commit
+data/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+preview/
+gallery/
+.pytest_cache/

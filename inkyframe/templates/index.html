@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en" data-theme="{{ theme }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4f1ea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>inkyframe</title>
+<style>
+  /* ---------- designs: classic (default) · modern · playful ---------- */
+  :root{--bg:#f4f1ea;--card:#fffdf8;--ink:#1d1b18;--mute:#77716a;--line:#e3ddd2;--acc:#b5361c;--ok:#2f7d4f;--r:14px;
+        --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--head:600 26px/1.2 Georgia,"Times New Roman",serif;
+        --h2:600 19px Georgia,serif;--btn:var(--ink);--btn-ink:#fff;--on:var(--ink);--tile:#fff;--shadow:none}
+  [data-theme=modern]{--bg:#f3f4f6;--card:#fff;--ink:#111827;--mute:#6b7280;--line:#e5e7eb;--acc:#1d4ed8;--r:10px;
+        --font:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--head:700 28px/1.15 Inter,ui-sans-serif,system-ui,sans-serif;
+        --h2:700 17px Inter,ui-sans-serif,system-ui,sans-serif;--btn:#1d4ed8;--on:#1d4ed8;--shadow:0 1px 2px rgba(0,0,0,.06),0 1px 8px rgba(0,0,0,.04)}
+  [data-theme=modern] h1{letter-spacing:-.02em} [data-theme=modern] h2{text-transform:uppercase;letter-spacing:.06em;font-size:13px;color:var(--mute)}
+  [data-theme=modern] .card{border-color:transparent}
+  [data-theme=modern] .mode.on{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+  [data-theme=playful]{--bg:#fff6e9;--card:#fff;--ink:#2b2340;--mute:#7a6f8a;--line:#f1e4d1;--acc:#ff5a5f;--r:24px;
+        --font:"Comic Neue","Nunito","Baloo 2",ui-rounded,"Segoe UI",system-ui,sans-serif;--head:800 30px/1.15 "Comic Neue","Nunito",ui-rounded,system-ui,sans-serif;
+        --h2:800 21px "Comic Neue","Nunito",ui-rounded,system-ui,sans-serif;--btn:#ff5a5f;--on:#2ec4b6;--shadow:0 4px 0 rgba(43,35,64,.08)}
+  [data-theme=playful] body{background-image:radial-gradient(#f3d9b8 1.2px,transparent 1.3px);background-size:22px 22px}
+  [data-theme=playful] .card{border-width:2px;border-top:6px solid #ff5a5f}
+  [data-theme=playful] .card:nth-of-type(4n+2){border-top-color:#ffc93c} [data-theme=playful] .card:nth-of-type(4n+3){border-top-color:#2ec4b6}
+  [data-theme=playful] .card:nth-of-type(4n){border-top-color:#3a86ff}
+  [data-theme=playful] .mode:nth-child(4n+1){--tile:#ffe3e3} [data-theme=playful] .mode:nth-child(4n+2){--tile:#fff1c9}
+  [data-theme=playful] .mode:nth-child(4n+3){--tile:#d9f6f2} [data-theme=playful] .mode:nth-child(4n){--tile:#e1ecff}
+  [data-theme=playful] .mode{border-radius:18px;border-color:transparent}
+  [data-theme=playful] .mode.on{border-color:var(--ink);box-shadow:0 3px 0 var(--ink)}
+  [data-theme=playful] button.btn{border-radius:99px} [data-theme=playful] .frame{border-radius:20px}
+  [data-theme=playful] h1:after{content:" ✿";color:#ff5a5f}
+
+  /* ---------- studio designs ---------- */
+  [data-theme=bauhaus]{--bg:#f4f1ea;--card:#fff;--ink:#1b1b1b;--mute:#5d5850;--line:#1b1b1b;--acc:#c8322b;--r:0;
+        --font:Archivo,system-ui,sans-serif;--head:400 30px/1.05 "Archivo Black",Archivo,sans-serif;--h2:400 18px "Archivo Black",sans-serif;--on:#2b4c9b}
+  [data-theme=bauhaus] h2{text-transform:uppercase;letter-spacing:.04em}
+  [data-theme=bauhaus] .card{border:3px solid #1b1b1b}
+  [data-theme=bauhaus] .card:nth-of-type(3n+1){border-top:12px solid #c8322b} [data-theme=bauhaus] .card:nth-of-type(3n+2){border-top:12px solid #e8c33a}
+  [data-theme=bauhaus] .card:nth-of-type(3n){border-top:12px solid #2b4c9b}
+  [data-theme=bauhaus] .mode,[data-theme=bauhaus] .design{border-radius:0;border-width:2px;border-color:#1b1b1b}
+  [data-theme=bauhaus] .sw span,[data-theme=bauhaus] .sw span:before{border-radius:0}
+
+  [data-theme=newspaper]{--bg:#f4f1ea;--card:#fbf8f0;--ink:#1b1b1b;--mute:#5d5850;--line:#cfc6b4;--acc:#c8322b;--r:0;
+        --font:"Source Serif 4",Georgia,serif;--head:900 34px/1.05 "Playfair Display",Georgia,serif;--h2:700 15px "Source Serif 4",Georgia,serif}
+  [data-theme=newspaper] h1{border-bottom:4px double #1b1b1b;padding-bottom:6px}
+  [data-theme=newspaper] h2{text-transform:uppercase;letter-spacing:.14em;border-bottom:1px solid #1b1b1b;padding-bottom:6px}
+  [data-theme=newspaper] .card{border-color:#1b1b1b}
+
+  [data-theme=deco]{--bg:#111;--card:#1b1b1b;--ink:#f4f1ea;--mute:#c9b977;--line:#6b5a1e;--acc:#e8c33a;--r:2px;--field:#111;--tile:#141414;
+        --font:"Josefin Sans",system-ui,sans-serif;--head:400 32px/1.1 Limelight,serif;--h2:400 20px "Poiret One",sans-serif;--btn:#e8c33a;--btn-ink:#111;--on:#e8c33a}
+  [data-theme=deco] h1{color:#e8c33a;letter-spacing:.04em} [data-theme=deco] h2{color:#e8c33a;letter-spacing:.2em;text-transform:uppercase}
+  [data-theme=deco] .card{border:1px solid #e8c33a;box-shadow:inset 0 0 0 4px #1b1b1b,inset 0 0 0 5px #6b5a1e}
+  [data-theme=deco] .pill{background:#2a2410;color:#e8c33a}
+
+  [data-theme=pixel]{--bg:#0e0e0e;--card:#1b1b1b;--ink:#f4f1ea;--mute:#a9a9a9;--line:#f4f1ea;--acc:#3d9a46;--r:0;--field:#0e0e0e;--tile:#141414;
+        --font:VT323,ui-monospace,monospace;--head:400 20px/1.4 "Press Start 2P",monospace;--h2:400 13px/1.6 "Press Start 2P",monospace;--btn:#3d9a46;--btn-ink:#0e0e0e;--on:#3d9a46}
+  [data-theme=pixel] body{font-size:20px}
+  [data-theme=pixel] .card{border:4px solid #f4f1ea;box-shadow:inset 0 0 0 3px #1b1b1b,inset 0 0 0 5px #f4f1ea}
+  [data-theme=pixel] .mode,[data-theme=pixel] .design,[data-theme=pixel] button.btn,[data-theme=pixel] .sw span,[data-theme=pixel] .sw span:before{border-radius:0}
+  [data-theme=pixel] .pill{background:#333;color:#e8c33a}
+
+  [data-theme=zen]{--bg:#f4f1ea;--card:#fbf9f4;--ink:#1b1b1b;--mute:#857d70;--line:#e6dfd2;--acc:#c8322b;--r:4px;
+        --font:"Zen Kaku Gothic New",system-ui,sans-serif;--head:500 34px/1.1 "Cormorant Garamond",serif;--h2:500 22px "Cormorant Garamond",serif;--btn:#1b1b1b;--on:#c8322b}
+  [data-theme=zen] .card{border-color:transparent;padding:22px} [data-theme=zen] h1:before{content:"";display:inline-block;width:18px;height:18px;background:#c8322b;margin-right:12px;border-radius:2px}
+
+  [data-theme=swiss]{--bg:#fff;--card:#fff;--ink:#000;--mute:#555;--line:#000;--acc:#c8322b;--r:0;
+        --font:"Inter Tight",Inter,system-ui,sans-serif;--head:900 36px/1 "Inter Tight",Inter,sans-serif;--h2:700 15px "Inter Tight",Inter,sans-serif;--btn:#000;--on:#c8322b}
+  [data-theme=swiss] .card{border:0;border-top:6px solid #000;padding:14px 0 6px;background:transparent}
+  [data-theme=swiss] .mode,[data-theme=swiss] .design,[data-theme=swiss] .frame{border-radius:0}
+  [data-theme=swiss] h1:after{content:"";display:inline-block;width:16px;height:16px;background:#c8322b;margin-left:10px}
+
+  [data-theme=memphis]{--bg:#e8c33a;--card:#fff;--ink:#1b1b1b;--mute:#4a4a4a;--line:#1b1b1b;--acc:#c8322b;--r:0;
+        --font:Rubik,system-ui,sans-serif;--head:800 32px/1.05 Rubik,sans-serif;--h2:800 20px Rubik,sans-serif;--btn:#c8322b;--on:#2b4c9b;--shadow:6px 6px 0 #1b1b1b}
+  [data-theme=memphis] body{background-image:radial-gradient(#1b1b1b 1.4px,transparent 1.5px);background-size:24px 24px}
+  [data-theme=memphis] .card{border:3px solid #1b1b1b}
+  [data-theme=memphis] .mode{border:2px solid #1b1b1b;box-shadow:3px 3px 0 #1b1b1b} [data-theme=memphis] button.btn{border:2px solid #1b1b1b;box-shadow:3px 3px 0 #1b1b1b}
+
+  [data-theme=blueprint]{--bg:#2b4c9b;--card:rgba(255,255,255,.04);--ink:#f4f1ea;--mute:#c9d4f0;--line:rgba(244,241,234,.55);--acc:#e8c33a;--r:0;--field:#24407f;--tile:rgba(255,255,255,.05);
+        --font:"IBM Plex Mono",ui-monospace,monospace;--head:600 26px/1.2 "IBM Plex Mono",monospace;--h2:600 14px "IBM Plex Mono",monospace;--btn:#f4f1ea;--btn-ink:#2b4c9b;--on:#e8c33a}
+  [data-theme=blueprint] body{background-image:linear-gradient(rgba(244,241,234,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(244,241,234,.12) 1px,transparent 1px);background-size:20px 20px}
+  [data-theme=blueprint] h1,[data-theme=blueprint] h2{text-transform:uppercase;letter-spacing:.08em}
+  [data-theme=blueprint] .card{border:1.5px solid #f4f1ea} [data-theme=blueprint] .pill{background:rgba(255,255,255,.12);color:#f4f1ea}
+
+  [data-theme=botanical]{--bg:#f4f1ea;--card:#fbf8ef;--ink:#1b1b1b;--mute:#6d6656;--line:#d9d2bf;--acc:#3d7a46;--r:6px;
+        --font:"Libre Caslon Text",Georgia,serif;--head:italic 400 32px/1.15 "Libre Caslon Text",Georgia,serif;--h2:italic 400 21px "Libre Caslon Text",Georgia,serif;--btn:#3d7a46;--on:#3d7a46}
+  [data-theme=botanical] h1:after{content:" ❦";color:#3d7a46}
+
+  [data-theme=chalk]{--bg:#1b1b1b;--card:#232323;--ink:#f4f1ea;--mute:#bdbab2;--line:rgba(244,241,234,.45);--acc:#e8c33a;--r:10px;--field:#1b1b1b;--tile:#1f1f1f;
+        --font:"Patrick Hand",system-ui,sans-serif;--head:400 40px/1.05 "Caveat Brush",cursive;--h2:400 26px "Caveat Brush",cursive;--btn:#e8c33a;--btn-ink:#1b1b1b;--on:#e8c33a}
+  [data-theme=chalk] body{font-size:18px} [data-theme=chalk] .card{border:2px dashed rgba(244,241,234,.55)}
+  [data-theme=chalk] .pill{background:#333;color:#e8c33a}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--font);padding:env(safe-area-inset-top) 0 40px}
+  main{max-width:560px;margin:0 auto;padding:0 16px}
+  h1{font:var(--head);margin:22px 0 2px}
+  h2{font:var(--h2);margin:0 0 12px}
+  a{color:inherit}
+  .sub{color:var(--mute);font-size:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:14px 0;box-shadow:var(--shadow)}
+  .frame{background:#2b2723;padding:10px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+  .frame img{display:block;width:100%;aspect-ratio:5/3;background:#fff;object-fit:contain}
+  .status{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:14px;color:var(--mute);flex-wrap:wrap}
+  .status b{color:var(--ink)}
+  .pill{display:inline-block;padding:2px 9px;border-radius:99px;background:#ece6db;font-size:13px}
+  .pill.busy{background:#fde8c8}.pill.err{background:#f8d7d0;color:var(--acc)}
+  .modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .mode .nm{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
+  .mode{border:1.5px solid var(--line);background:var(--tile);border-radius:12px;padding:10px 7px;text-align:left;font:inherit;color:inherit;cursor:pointer;position:relative}
+  .mode .ic{font-size:22px;line-height:1;display:block;margin:4px 0 6px}
+  .mode .nm{font-weight:600;font-size:12.5px;line-height:1.25;display:block}
+  .mode.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+  .mode .pv{position:absolute;right:6px;top:6px;font-size:15px;color:var(--mute);text-decoration:none;padding:2px 4px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+  .row:first-child{border-top:0}
+  .row>label:first-child,.row>div:first-child{flex:1}
+  input[type=text],input[type=number],input[type=time],input[type=date],input[type=password],select,textarea{font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--field,#fff);color:inherit;width:100%}
+  .row input[type=number]{width:84px;text-align:right}
+  .row input[type=time]{width:110px}
+  .row select{width:auto;max-width:60%}
+  textarea{min-height:110px;resize:vertical;font-size:15px}
+  .sw{position:relative;width:48px;height:28px;flex:none;display:inline-block}
+  .sw input{opacity:0;width:0;height:0}
+  .sw span{position:absolute;inset:0;background:#d5cec2;border-radius:99px;transition:.2s}
+  .sw span:before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .sw input:checked+span{background:var(--on)}
+  .sw input:checked+span:before{transform:translateX(20px)}
+  button.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:11px 16px;background:var(--btn);color:var(--btn-ink);cursor:pointer}
+  button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  button.small{padding:6px 11px;font-size:14px}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  details{border-top:1px solid var(--line);padding:4px 0}
+  details:first-of-type{border-top:0}
+  summary{cursor:pointer;padding:10px 0;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:8px}
+  summary::-webkit-details-marker{display:none}
+  summary:after{content:"＋";color:var(--mute)} details[open] summary:after{content:"－"}
+  .field{margin:10px 0}.field>span{display:block;font-size:13px;color:var(--mute);margin-bottom:4px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .rot{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+  .rot:first-child{border-top:0}
+  .rot .nm{flex:1}
+  .rot input[type=number]{width:70px;text-align:right}
+  .rot .mv{display:flex;flex-direction:column}
+  .rot .mv button{border:0;background:none;font-size:13px;line-height:1;padding:3px 6px;color:var(--mute);cursor:pointer}
+  .hint{font-size:13px;color:var(--mute);margin:6px 0 0}
+  .result{margin-top:10px;padding:10px 12px;background:#f1ece2;border-radius:9px;font-size:15px}
+  .result.big{font:var(--h2)}
+  .designs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .design{border:2px solid var(--line);border-radius:12px;padding:6px;background:var(--card);cursor:pointer;text-align:center;font:inherit;color:inherit}
+  .design img{width:100%;aspect-ratio:5/3;display:block;border-radius:6px;background:#eee}
+  .design b{display:block;font-size:14px;margin-top:6px}
+  .design .hint{display:block;margin:0;font-size:11px}
+  .design.on{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:14px;transition:.25s;opacity:0;z-index:9;max-width:90vw}
+  .toast.show{transform:translateX(-50%);opacity:1}
+  dialog{border:0;border-radius:12px;padding:12px;max-width:94vw;width:640px;background:#2b2723}
+  dialog img{width:100%;display:block;background:#fff}
+  dialog::backdrop{background:rgba(0,0,0,.55)}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ccc;margin-right:6px}
+  .dot.on{background:var(--ok)}
+  .colors{display:flex;gap:6px}
+  .colors label{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);cursor:pointer;display:block}
+  .colors input{display:none}
+  .colors input:checked+label{outline:2px solid var(--ink);outline-offset:2px}
+  .tag{font-size:11px;font-weight:600;color:var(--mute);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-left:6px}
+  footer{text-align:center;color:var(--mute);font-size:13px;margin:24px 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>inkyframe</h1>
+  <div class="sub" id="sub">connecting …</div>
+
+  <div class="card">
+    <div class="frame"><img id="cur" alt="Current display"></div>
+    <div class="status">
+      <span>Showing <b id="stMode">–</b> <span id="stReason"></span></span>
+      <span id="stPill" class="pill">ready</span>
+    </div>
+    <div class="status" id="stNext"></div>
+    <div class="btns">
+      <button class="btn ghost small" onclick="post('/api/refresh').then(()=>toast('Redrawing – takes about 30 s'))">Redraw</button>
+      <button class="btn ghost small" id="backAuto" style="display:none" onclick="setAuto(true)">Back to rotation</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Show now</h2>
+    <div class="modes" id="modes"></div>
+    <p class="hint" id="modeHint"></p>
+  </div>
+
+  <div class="card">
+    <h2>Design</h2>
+    <div class="designs" id="designs"></div>
+    <p class="hint" id="designHint">Applies to every screen on the frame. Tap to switch – the frame redraws in about 30 s.</p>
+    <div class="row"><label>Design of this app</label><select id="appTheme" onchange="saveAppTheme()">
+      <option value="auto">Same as frame</option><option value="classic">Classic</option><option value="modern">Modern</option><option value="playful">Playful</option>
+      <option value="bauhaus">Bauhaus</option><option value="newspaper">Newspaper</option><option value="deco">Art déco</option><option value="pixel">Pixel</option><option value="zen">Zen</option>
+      <option value="swiss">Swiss</option><option value="memphis">Memphis</option><option value="blueprint">Blueprint</option><option value="botanical">Botanical</option><option value="chalk">Chalkboard</option></select></div>
+  </div>
+
+  <div class="card">
+    <h2>Rotation</h2>
+    <div class="row"><label>Rotation on</label><label class="sw"><input type="checkbox" id="autoOn" onchange="setAuto(this.checked)"><span></span></label></div>
+    <div id="rotList"></div>
+    <div id="intList"></div>
+    <div class="row"><div>Manual choice lasts (min)<div class="hint">when you pick a mode while rotation is on</div></div><input type="number" id="hold" min="1" max="600"></div>
+    <div class="row"><label>Quiet hours (no refresh)</label><label class="sw"><input type="checkbox" id="qOn"><span></span></label></div>
+    <div class="row"><label>from / to</label><input type="time" id="qStart"><input type="time" id="qEnd"></div>
+    <div class="btns"><button class="btn" onclick="saveAuto()">Save</button></div>
+  </div>
+
+  <div class="card">
+    <h2>Plugins</h2>
+    <div id="plugins"></div>
+    <p class="hint" id="failed"></p>
+  </div>
+
+  <div class="card">
+    <h2>General</h2>
+    <div class="row"><label>Display language</label><select id="gLang"></select></div>
+    <div class="field"><span>Location name</span><input type="text" id="gName"></div>
+    <div class="grid2">
+      <div class="field"><span>Latitude</span><input type="text" id="gLat" inputmode="decimal"></div>
+      <div class="field"><span>Longitude</span><input type="text" id="gLon" inputmode="decimal"></div>
+    </div>
+    <div class="row"><label>Public holidays</label><select id="gHol"></select></div>
+    <div class="row"><label>Rotate display 180°</label><label class="sw"><input type="checkbox" id="dRot"><span></span></label></div>
+    <div class="row"><label>Crisp text (no anti-aliasing)</label><label class="sw"><input type="checkbox" id="dCrisp"><span></span></label></div>
+    <div class="row"><label>Colour saturation (0–1)</label><input type="number" id="dSat" min="0" max="1" step="0.1"></div>
+    <div class="btns"><button class="btn" onclick="saveGeneral()">Save</button></div>
+  </div>
+
+  <footer>inkyframe · write your own plugin: see <code>docs/PLUGINS.md</code></footer>
+</main>
+
+<dialog id="dlg" onclick="this.close()"><img id="dlgImg" alt="Preview"></dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+let S = null, lastUpdated = null, rot = [];
+const $ = id => document.getElementById(id);
+const PN = {};   // plugin id -> name
+const COLORS = {black:'#000',white:'#fff',red:'#e00',yellow:'#ffd400',green:'#1a9a3a',blue:'#1840d0'};
+
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2800)}
+async function post(url, body){const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});const j=await r.json().catch(()=>({}));if(!r.ok||j.ok===false)throw new Error(j.error||r.statusText);return j}
+async function save(patch,msg){try{await post('/api/config',patch);toast(msg||'Saved');await load(true)}catch(e){toast('Error: '+e.message)}}
+const fmt = ts => new Date(ts*1000).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+async function load(full){
+  S = await (await fetch('/api/state')).json();
+  const c = S.config, st = S.status;
+  applyAppTheme(c.app_theme === 'auto' ? c.theme : c.app_theme);
+  S.plugins.forEach(p=>PN[p.id]=p.name);
+  $('sub').textContent = (st.display ? 'Display connected' : 'No display detected – preview only') + ' · v' + S.version;
+  $('stMode').textContent = PN[st.mode] || '–';
+  $('stReason').textContent = st.reason ? '· '+st.reason : '';
+  const p=$('stPill'); p.className='pill'+(st.busy?' busy':st.error?' err':'');
+  p.textContent = st.busy ? 'drawing …' : st.error ? 'error' : (st.updated ? 'updated '+fmt(st.updated) : 'ready');
+  let nx = st.override_until ? 'Manual until '+fmt(st.override_until)+', then rotation' : st.next_change ? 'Next switch ≈ '+fmt(st.next_change) : '';
+  if(st.error) nx += (nx?' · ':'') + st.error;
+  $('stNext').textContent = nx;
+  $('backAuto').style.display = (st.override_until || !c.auto.enabled) ? '' : 'none';
+  if(st.updated !== lastUpdated){ lastUpdated = st.updated; $('cur').src='/current.png?'+Date.now(); }
+  $('modes').innerHTML = S.plugins.map(p=>`<button class="mode ${st.mode===p.id?'on':''}" onclick="showMode('${p.id}')">
+     <span class="pv" title="Preview" onclick="event.stopPropagation();preview('${p.id}')">⤢</span>
+     <span class="ic">${esc(p.icon)}</span><span class="nm" lang="${c.language}">${esc(p.name)}</span></button>`).join('');
+  $('modeHint').textContent = c.auto.enabled ? `While rotation is on, your choice stays for ${c.auto.hold_minutes} min.` : 'Your choice stays until you pick something else.';
+  if(!full) return;
+
+  renderDesigns();
+  $('autoOn').checked = c.auto.enabled; renderRot(c.auto.items);
+  $('intList').innerHTML = S.plugins.filter(p=>p.can_interrupt).map(p=>`<div class="row"><div>${esc(p.name)} may take over<div class="hint">${esc(p.description)}</div></div>
+     <label class="sw"><input type="checkbox" data-int="${p.id}" ${c.interrupts[p.id]?'checked':''}><span></span></label></div>`).join('');
+  $('hold').value = c.auto.hold_minutes;
+  $('qOn').checked = c.quiet.enabled; $('qStart').value=c.quiet.start; $('qEnd').value=c.quiet.end;
+  renderPlugins();
+  $('failed').textContent = S.failed.length ? 'Failed to load: '+S.failed.join(', ')+' (see log)' : '';
+  $('gLang').innerHTML = S.languages.map(([code,name])=>`<option value="${code}" ${code===c.language?'selected':''}>${esc(name)}</option>`).join(''); $('gName').value=c.location.name; $('gLat').value=c.location.lat; $('gLon').value=c.location.lon;
+  $('gHol').innerHTML = S.holiday_regions.map(([v,l])=>`<option value="${v}" ${v===c.location.holidays?'selected':''}>${esc(l)}</option>`).join('');
+  $('dRot').checked=c.display.rotate180; $('dCrisp').checked=c.display.crisp_text; $('dSat').value=c.display.saturation;
+}
+
+// ---------- designs ----------
+let designShot = Date.now();
+const APP_FONTS = {
+  modern:'Inter:wght@400;600;700', bauhaus:'Archivo+Black&family=Archivo:wght@400;600;800',
+  newspaper:'Playfair+Display:wght@700;900&family=Source+Serif+4:wght@400;600', deco:'Limelight&family=Poiret+One&family=Josefin+Sans:wght@400;600',
+  pixel:'Press+Start+2P&family=VT323', zen:'Cormorant+Garamond:wght@500&family=Zen+Kaku+Gothic+New:wght@400;700',
+  swiss:'Inter+Tight:wght@400;500;700;900', memphis:'Rubik:wght@400;500;700;800', blueprint:'IBM+Plex+Mono:wght@400;600',
+  botanical:'Libre+Caslon+Text:ital,wght@0,400;1,400', chalk:'Caveat+Brush&family=Patrick+Hand', playful:'Comic+Neue:wght@400;700'};
+function applyAppTheme(t){
+  document.documentElement.dataset.theme = t;
+  if(APP_FONTS[t] && !document.getElementById('font-'+t)){
+    const l = document.createElement('link'); l.id = 'font-'+t; l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=' + APP_FONTS[t] + '&display=swap'; document.head.appendChild(l);
+  }
+}
+function renderDesigns(){
+  const c = S.config, pv = S.design_preview;
+  const tile = t => {
+    let note = '';
+    if(t.progress==='downloading') note = '<span class="hint">loading fonts…</span>';
+    else if(t.progress.startsWith('error')) note = `<span class="hint" title="${esc(t.progress)}">fonts offline</span>`;
+    else if(!t.fonts_ok && !t.downloadable) note = '<span class="hint">fonts missing</span>';
+    return `<button class="design ${t.id===c.theme?'on':''}" onclick="setTheme('${t.id}')">
+     <img src="/api/preview/${pv}.png?sample=1&theme=${t.id}&t=${designShot}" alt="${esc(t.label)}" loading="lazy">
+     <b>${esc(t.label)}</b>${t.dark?'<span class="hint">dark</span>':''}${note}</button>`;
+  };
+  const groups = [['basic','Basics'],['studio','Studio designs']];
+  $('designs').innerHTML = groups.map(([g,l])=>`<p class="hint" style="grid-column:1/-1;margin:8px 0 0;font-weight:600">${l}</p>`
+    + S.themes.filter(t=>t.group===g).map(tile).join('')).join('');
+  const cur = S.themes.find(t=>t.id===c.theme);
+  let fontsNote = '';
+  if(cur && cur.downloadable && !cur.fonts_ok) fontsNote = cur.progress==='downloading' ? ' Fonts are being downloaded …'
+     : ` <button class="btn ghost small" onclick="loadFonts('${cur.id}')">Download fonts</button>`;
+  $('designHint').innerHTML = esc((cur?cur.description+' ':'') + 'Applies to every screen on the frame; tap to switch (redraw ≈ 30 s). Fonts of studio designs download automatically.') + fontsNote;
+  $('appTheme').value = c.app_theme || 'auto';
+  if(S.themes.some(t=>t.progress==='downloading')) setTimeout(()=>{designShot=Date.now();load(true)}, 4000);
+}
+async function loadFonts(id){ try{ await post('/api/fonts/'+id); toast('Downloading fonts …'); setTimeout(()=>load(true),1500) }catch(e){ toast(e.message) } }
+async function setTheme(id){ try{ await post('/api/config',{theme:id}); toast('Design: '+id+' – redrawing'); designShot=Date.now(); load(true) }catch(e){ toast(e.message) } }
+async function saveAppTheme(){ await save({app_theme:$('appTheme').value}, 'App design saved') }
+
+// ---------- rotation ----------
+function renderRot(items){
+  if(items) rot = JSON.parse(JSON.stringify(items));
+  rot = rot.filter(r=>PN[r.mode]);
+  S.plugins.forEach(p=>{ if(!rot.find(r=>r.mode===p.id)) rot.push({mode:p.id,minutes:10,enabled:false}) });
+  $('rotList').innerHTML = rot.map((r,i)=>`<div class="rot">
+    <label class="sw"><input type="checkbox" ${r.enabled?'checked':''} onchange="rot[${i}].enabled=this.checked"><span></span></label>
+    <span class="nm">${esc(PN[r.mode])}</span>
+    <input type="number" min="1" max="720" value="${r.minutes}" onchange="rot[${i}].minutes=+this.value"> <span class="hint">min</span>
+    <span class="mv"><button onclick="mv(${i},-1)">▲</button><button onclick="mv(${i},1)">▼</button></span></div>`).join('');
+}
+function mv(i,d){const j=i+d;if(j<0||j>=rot.length)return;[rot[i],rot[j]]=[rot[j],rot[i]];renderRot()}
+async function setAuto(on){try{await post('/api/auto',{enabled:on});toast(on?'Rotation on':'Rotation off');load(true)}catch(e){toast(e.message)}}
+function saveAuto(){
+  const ints={}; document.querySelectorAll('[data-int]').forEach(e=>ints[e.dataset.int]=e.checked);
+  save({auto:{enabled:$('autoOn').checked,items:rot,hold_minutes:+$('hold').value},interrupts:ints,
+        quiet:{enabled:$('qOn').checked,start:$('qStart').value,end:$('qEnd').value}});
+}
+
+// ---------- plugins (forms generated from each plugin's settings) ----------
+function field(p, s){
+  const v = p.values[s.key], id = `f_${p.id}_${s.key}`, help = s.help?`<div class="hint">${esc(s.help)}</div>`:'';
+  switch(s.type){
+    case 'info': return `<p class="hint">${esc(s.label)}</p>`;
+    case 'bool': return `<div class="row"><div>${esc(s.label)}${help}</div><label class="sw"><input type="checkbox" id="${id}" ${v?'checked':''}><span></span></label></div>`;
+    case 'number': return `<div class="row"><div>${esc(s.label)}${help}</div><input type="number" id="${id}" value="${esc(v)}" ${s.min!=null?`min="${s.min}"`:''} ${s.max!=null?`max="${s.max}"`:''} step="any"></div>`;
+    case 'select': return `<div class="row"><div>${esc(s.label)}${help}</div><select id="${id}">${s.options.map(([o,l])=>`<option value="${esc(o)}" ${o==v?'selected':''}>${esc(l)}</option>`).join('')}</select></div>`;
+    case 'color': return `<div class="row"><div>${esc(s.label)}</div><div class="colors">${Object.entries(COLORS).map(([k,hex])=>`<input type="radio" name="${id}" id="${id}_${k}" value="${k}" ${k===v?'checked':''}><label for="${id}_${k}" style="background:${hex}" title="${k}"></label>`).join('')}</div></div>`;
+    case 'textarea': return `<div class="field"><span>${esc(s.label)}</span><textarea id="${id}">${esc(v)}</textarea>${help}</div>`;
+    case 'action': return `<div class="field">${s.input?`<input type="text" id="${id}" placeholder="${esc(s.input)}" style="margin-bottom:6px">`:''}<button class="btn ghost small" onclick="act('${p.id}','${s.key}')">${esc(s.label)}</button></div>`;
+    default: {
+      const t = s.type==='secret'?'password':(s.type==='date'||s.type==='time')?s.type:'text';
+      return `<div class="field"><span>${esc(s.label)}</span><input type="${t}" id="${id}" value="${esc(v)}" autocomplete="off">${help}</div>`;
+    }
+  }
+}
+function renderPlugins(){
+  const open = [...document.querySelectorAll('#plugins details[open]')].map(d=>d.dataset.id);
+  $('plugins').innerHTML = S.plugins.map(p=>`<details data-id="${p.id}" ${open.includes(p.id)?'open':''}>
+    <summary><span>${esc(p.icon)} ${esc(p.name)}${p.builtin?'':'<span class="tag">user</span>'}</span></summary>
+    <p class="hint">${esc(p.description)}${p.author?` · by ${esc(p.author)}`:''}</p>
+    ${p.status?`<p class="hint"><span class="dot ${/^connected|ok/i.test(p.status)?'on':''}"></span>${esc(p.status)}</p>`:''}
+    ${p.settings.map(s=>field(p,s)).join('')}
+    <div id="res_${p.id}"></div>
+    <div class="btns">${p.settings.some(s=>!['action','info'].includes(s.type))?`<button class="btn small" onclick="savePlugin('${p.id}')">Save</button>`:''}
+      <button class="btn ghost small" onclick="preview('${p.id}')">Preview</button>
+      <button class="btn ghost small" onclick="preview('${p.id}',1)">Demo data</button></div>
+  </details>`).join('');
+}
+function readPlugin(p){
+  const out={};
+  p.settings.forEach(s=>{
+    const id=`f_${p.id}_${s.key}`;
+    if(['action','info'].includes(s.type)) return;
+    if(s.type==='bool') out[s.key]=$(id).checked;
+    else if(s.type==='color'){const e=document.querySelector(`input[name="${id}"]:checked`); if(e) out[s.key]=e.value;}
+    else out[s.key]=$(id).value;
+  });
+  return out;
+}
+async function savePlugin(pid){
+  const p=S.plugins.find(x=>x.id===pid);
+  try{await post(`/api/plugins/${pid}/settings`, readPlugin(p)); toast('Saved'); load(true)}catch(e){toast('Error: '+e.message)}
+}
+async function act(pid,key){
+  const p=S.plugins.find(x=>x.id===pid), s=p.settings.find(x=>x.key===key);
+  const inp=$(`f_${pid}_${key}`);
+  // save pending edits first so actions see current values (e.g. Spotify client id)
+  if(p.settings.some(x=>!['action','info'].includes(x.type))) await post(`/api/plugins/${pid}/settings`, readPlugin(p)).catch(()=>{});
+  const box=$('res_'+pid); box.innerHTML='<p class="hint">working …</p>';
+  try{
+    const r=await post(`/api/plugins/${pid}/action/${key}`, {value: inp?inp.value:null});
+    if(r.open_url){ window.open(r.open_url,'_blank'); box.innerHTML=''; return; }
+    box.innerHTML = (r.message?`<div class="result big">${esc(r.message)}</div>`:'') + (r.link?`<p class="hint"><a href="${esc(r.link)}" target="_blank">Open</a></p>`:'');
+    if(inp) inp.value=''; setTimeout(()=>load(true),400);
+  }catch(e){ box.innerHTML=`<div class="result">${esc(e.message)}</div>` }
+}
+async function showMode(id){try{await post('/api/show/'+id);toast(PN[id]+' – appears in about 30 s');setTimeout(()=>load(),800)}catch(e){toast(e.message)}}
+function preview(id, sample){$('dlgImg').src='';$('dlgImg').src=`/api/preview/${id}.png?${sample?'sample=1&':''}t=${Date.now()}`;$('dlg').showModal()}
+
+function saveGeneral(){
+  const num = v => parseFloat(String(v).replace(',','.'));
+  save({language:$('gLang').value, location:{name:$('gName').value,lat:num($('gLat').value),lon:num($('gLon').value),holidays:$('gHol').value},
+        display:{rotate180:$('dRot').checked,crisp_text:$('dCrisp').checked,saturation:num($('dSat').value)}});
+}
+
+load(true).catch(()=>{$('sub').textContent='Frame not reachable'});
+setInterval(()=>load(false).catch(()=>{}),8000);
+</script>
+</body>
+</html>

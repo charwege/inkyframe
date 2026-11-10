@@ -1,0 +1,126 @@
+NAME = "Nederlands"
+
+STRINGS = {
+    "Weather & Calendar": "Weer en kalender", "Chess Puzzle": "Schaakpuzzel", "Thought of the Day": "Gedachte van de dag",
+    "Spotify": "Spotify", "Grid Signal": "Stroomverkeerslicht", "Word Clock": "Woordklok", "Countdown": "Aftellen",
+    "Art of the Day": "Kunstwerk van de dag", "Waste Collection": "Afvalophaling", "Weather Warnings": "Weerwaarschuwingen",
+    "Guest Wi-Fi": "Gasten-wifi", "Habit Tracker": "Gewoontes", "Sudoku of the Day": "Sudoku van de dag",
+    "Solar Power": "Zonne-energie", "Water Level": "Waterstand", "Birthdays": "Verjaardagen", "Watchlist": "Volglijst",
+    "Clear": "Helder", "Mainly clear": "Overwegend helder", "Partly cloudy": "Half bewolkt", "Overcast": "Bewolkt",
+    "Fog": "Mist", "Rime fog": "IJsmist", "Light drizzle": "Lichte motregen", "Drizzle": "Motregen",
+    "Heavy drizzle": "Zware motregen", "Freezing drizzle": "IJzel", "Light rain": "Lichte regen", "Rain": "Regen",
+    "Heavy rain": "Zware regen", "Freezing rain": "IJzelregen", "Light snow": "Lichte sneeuw", "Snow": "Sneeuw",
+    "Heavy snow": "Zware sneeuw", "Snow grains": "Motsneeuw", "Showers": "Buien", "Violent showers": "Zware buien",
+    "Snow showers": "Sneeuwbuien", "Thunderstorm": "Onweer", "Thunderstorm, hail": "Onweer met hagel",
+    "feels {t}°": "gevoel {t}°", "Day: {h} h {m:02d} min": "Dag: {h} u {m:02d} min",
+    "Chance of rain · max {p} %": "Kans op regen · max. {p} %", "Updated {t}": "Bijgewerkt {t}",
+    "New Year's Day": "Nieuwjaarsdag", "Good Friday": "Goede Vrijdag", "Easter Sunday": "Eerste paasdag", "Easter Monday": "Tweede paasdag",
+    "Labour Day": "Dag van de Arbeid", "Ascension Day": "Hemelvaartsdag", "Whit Sunday": "Eerste pinksterdag", "Whit Monday": "Tweede pinksterdag",
+    "German Unity Day": "Dag van de Duitse Eenheid", "Christmas Day": "Eerste kerstdag", "Boxing Day": "Tweede kerstdag",
+    "Reformation Day": "Hervormingsdag", "Corpus Christi": "Sacramentsdag", "All Saints' Day": "Allerheiligen",
+    "Epiphany": "Driekoningen", "Assumption Day": "Maria-Tenhemelopneming",
+    "Puzzle": "Puzzel", "of the day": "van de dag", "White": "Wit", "Black": "Zwart", "{s} to move": "{s} aan zet",
+    "Solution: {n} move": "Oplossing: {n} zet", "Solution: {n} moves": "Oplossing: {n} zetten",
+    "Solution in the web app": "Oplossing in de webapp", "Rating {r}": "Rating {r}",
+    "Mate in 1": "Mat in 1", "Mate in 2": "Mat in 2", "Mate in 3": "Mat in 3", "Mate in 4": "Mat in 4", "Fork": "Vork",
+    "Pin": "Penning", "Sacrifice": "Offer", "Endgame": "Eindspel", "Middlegame": "Middenspel", "Opening": "Opening",
+    "Short": "Kort", "Long": "Lang", "Advantage": "Voordeel", "Crushing": "Verpletterend", "Kingside attack": "Koningsaanval",
+    "Question of the day": "Vraag van de dag", "Thought of the day": "Gedachte van de dag",
+    "No entries yet – add your own in the web app?": "Nog niets ingevoerd – zelf iets toevoegen in de webapp?",
+    "Now playing": "Speelt nu", "Recently played": "Onlangs beluisterd", "Paused": "Gepauzeerd", "Nothing playing": "Er speelt niets",
+    "The cover appears as soon as music plays.": "De hoes verschijnt zodra er muziek speelt.",
+    "Spotify is not connected yet": "Spotify is nog niet gekoppeld",
+    "Set it up in the web app under Plugins → Spotify.": "Stel het in via de webapp onder Plugins → Spotify.",
+    "Grid signal": "Stroomverkeerslicht", "Share of renewables in electricity consumption": "Aandeel hernieuwbare energie in het stroomverbruik",
+    "now": "nu", "green": "groen", "yellow": "geel", "red": "rood", "red · grid congestion": "rood · netcongestie",
+    "Best 3 hours today: from {t} (avg {p} %)": "Beste 3 uur vandaag: vanaf {t} (gem. {p} %)",
+    "Best 3 hours tomorrow: from {t} (avg {p} %)": "Beste 3 uur morgen: vanaf {t} (gem. {p} %)",
+    "Source: Energy-Charts / Fraunhofer ISE · {t}": "Bron: Energy-Charts / Fraunhofer ISE · {t}",
+    "days until": "dagen tot", "day until": "dag tot", "days since": "dagen sinds", "Today!": "Vandaag!",
+    "Please set a valid date": "Vul een geldige datum in", "Summer holidays": "Zomervakantie",
+    "Art of the day": "Kunstwerk van de dag", "Public domain": "Publiek domein",
+    "Waste collection": "Afvalophaling", "Tomorrow": "Morgen", "Today": "Vandaag", "in {n} days": "over {n} dagen",
+    "Add your collection calendar": "Voeg je afvalkalender toe",
+    "Paste the iCal link in the web app under Plugins → Waste Collection.": "Plak de iCal-link in de webapp onder Plugins → Afvalophaling.",
+    "No collections in the next {n} days": "Geen ophaling in de komende {n} dagen",
+    "Recycling": "Plastic", "General waste": "Restafval", "Paper": "Papier", "Organic waste": "Gft",
+    "Weather warnings": "Weerwaarschuwingen", "No warnings right now": "Momenteel geen waarschuwingen", "Also: {m}": "Ook: {m}",
+    "Warning": "Waarschuwing", "Severe weather": "Gevaarlijk weer", "Severe weather warning": "Noodweerwaarschuwing",
+    "Extreme weather warning": "Waarschuwing extreem weer", "{a} – {b}": "{a} – {b}",
+    "Source: Deutscher Wetterdienst via Bright Sky · {t}": "Bron: Deutscher Wetterdienst via Bright Sky · {t}",
+    "Deutscher Wetterdienst via Bright Sky · updated {t}": "Deutscher Wetterdienst via Bright Sky · bijgewerkt {t}",
+    "Scan with your phone camera": "Scan met de camera van je telefoon", "Network": "Netwerk",
+    "Password": "Wachtwoord", "Wi-Fi not set up yet": "Wifi nog niet ingesteld", "Guests": "Gasten",
+    "Enter network name and password under Plugins → Guest Wi-Fi.": "Vul netwerknaam en wachtwoord in onder Plugins → Gasten-wifi.",
+    "Welcome! Make yourself at home.": "Welkom! Voel je thuis.",
+    "Habits": "Gewoontes", "d": "d", "No habits yet": "Nog geen gewoontes",
+    "Add some under Plugins → Habit Tracker.": "Voeg ze toe onder Plugins → Gewoontes.",
+    "Read": "Lezen", "Exercise": "Sporten", "No phone after 10 pm": "Geen telefoon na 22 uur", "Meditate": "Mediteren",
+    "{n} givens": "{n} gegeven cijfers", "Easy": "Makkelijk", "Medium": "Gemiddeld", "Hard": "Moeilijk",
+    "Solar power": "Zonne-energie", "right now": "op dit moment", "today · approx. {e} € saved": "vandaag · ca. {e} € bespaard",
+    "{t} kWh in total": "{t} kWh in totaal", "Solar source not set up": "Zonnebron niet ingesteld",
+    "Enter your OpenDTU address or Home Assistant details under Plugins → Solar Power.": "Vul je OpenDTU-adres of Home Assistant-gegevens in onder Plugins → Zonne-energie.",
+    "Choose a gauge": "Kies een meetpunt", "Search for a station under Plugins → Water Level.": "Zoek een meetpunt onder Plugins → Waterstand.",
+    "rising": "stijgend", "falling": "dalend", "steady": "gelijkblijvend", "level": "stand", "mean water (MW)": "gemiddelde stand (MW)",
+    "Source: PEGELONLINE (WSV) · {t}": "Bron: PEGELONLINE (WSV) · {t}",
+    "coming up": "binnenkort", "Happy birthday": "Gefeliciteerd", "turns {n}": "wordt {n}", "tomorrow": "morgen",
+    "in {n} d": "over {n} d", "No birthdays yet": "Nog geen verjaardagen",
+    "Add them under Plugins → Birthdays.": "Voeg ze toe onder Plugins → Verjaardagen.",
+    "Last close · change · {n} days": "Laatste slot · verandering · {n} dagen", "Watchlist is empty": "De volglijst is leeg",
+    "Add symbols under Plugins → Watchlist.": "Voeg symbolen toe onder Plugins → Volglijst.",
+    "Source: {s} · delayed · {t}": "Bron: {s} · vertraagd · {t}",
+    "{n} is unavailable right now": "{n} is nu niet beschikbaar",
+}
+
+WEEKDAYS = ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"]
+WEEKDAYS_SHORT = ["ma", "di", "wo", "do", "vr", "za", "zo"]
+WEEKDAY_LETTERS = "MDWDVZZ"
+MONTHS = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"]
+MONTHS_GEN = MONTHS
+MONTHS_SHORT = ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"]
+FIRST_WEEKDAY = 0
+LONG_DATE = "{wd} {d} {mon}"
+LONG_DATE_NO_WD = "{d} {mon}"
+LONG_DATE_YEAR = "{d} {mon} {y}"
+SHORT_DATE = "{d}-{m}"
+DECIMAL, THOUSANDS = ",", "."
+QUOTE_MARKS = ("“", "”")
+MOON = ["Nieuwe maan", "Wassende sikkel", "Eerste kwartier", "Wassende maan", "Volle maan",
+        "Afnemende maan", "Laatste kwartier", "Afnemende sikkel"]
+
+QUOTES = [
+    ("Het is niet zo dat we weinig tijd hebben, maar dat we er veel van verspillen.", "Seneca"),
+    ("We lijden vaker in onze verbeelding dan in werkelijkheid.", "Seneca"),
+    ("Het geluk van je leven hangt af van de kwaliteit van je gedachten.", "Marcus Aurelius"),
+    ("Niet de dingen zelf verontrusten de mensen, maar hun oordeel over de dingen.", "Epictetus"),
+    ("Weten is niet genoeg, we moeten toepassen; willen is niet genoeg, we moeten doen.", "Goethe"),
+    ("Alleen met het hart kun je goed zien. Het wezenlijke is voor de ogen onzichtbaar.", "Antoine de Saint-Exupéry"),
+    ("Een reis van duizend mijl begint met één stap.", "Lao Tse"),
+    ("Je kunt niet twee keer in dezelfde rivier stappen.", "Heraclitus"),
+    ("Het leven kan alleen achterwaarts begrepen worden, maar moet voorwaarts geleefd worden.", "Søren Kierkegaard"),
+    ("Ik weet dat ik niets weet.", "Socrates"),
+    ("Goed begonnen is half gewonnen.", "Aristoteles"),
+    ("Ons leven wordt verspild aan details. Vereenvoudig, vereenvoudig.", "Henry David Thoreau"),
+]
+QUESTIONS = [
+    "Waar kijk je vandaag naar uit – heel concreet?",
+    "Welke kleine stap van vandaag voelt over een jaar groot?",
+    "Wie zou je vandaag oprecht kunnen bedanken?",
+    "Wat zou je vandaag doen als je niet bang was voor de uitkomst?",
+    "Welk ene ding zou van vandaag een goede dag maken?",
+    "Wat kun je vandaag weglaten?",
+    "Waar ben je nu dankbaar voor, zonder lang na te denken?",
+    "Welk gesprek schuif je al een tijd voor je uit?",
+    "Wat heb je onlangs voor het eerst gedaan?",
+    "Waaraan merk je vanavond dat het een goede dag was?",
+    "Wie heb je al veel te lang niet gebeld?",
+    "Wat zou je toekomstige ik je vandaag aanraden?",
+    "Waar kun je vandaag gul zijn?",
+    "Wat is belangrijk voor je en staat in geen enkele agenda?",
+    "Wanneer deed je voor het laatst iets puur uit nieuwsgierigheid?",
+    "Wat zou je een vriend in jouw situatie zeggen?",
+    "Wat heeft je deze week verrast?",
+    "Wat kun je vandaag eenvoudiger maken?",
+    "Welk klein plezier kun je vandaag iemand bezorgen?",
+    "Waar heb je onlangs hardop om gelachen?",
+]

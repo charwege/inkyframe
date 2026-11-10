@@ -1,0 +1,126 @@
+NAME = "Español"
+
+STRINGS = {
+    "Weather & Calendar": "Tiempo y calendario", "Chess Puzzle": "Problema de ajedrez", "Thought of the Day": "Pensamiento del día",
+    "Spotify": "Spotify", "Grid Signal": "Semáforo de la red", "Word Clock": "Reloj de palabras", "Countdown": "Cuenta atrás",
+    "Art of the Day": "Obra del día", "Waste Collection": "Recogida de basura", "Weather Warnings": "Avisos meteorológicos",
+    "Guest Wi-Fi": "Wi-Fi de invitados", "Habit Tracker": "Hábitos", "Sudoku of the Day": "Sudoku del día",
+    "Solar Power": "Energía solar", "Water Level": "Nivel del agua", "Birthdays": "Cumpleaños", "Watchlist": "Lista de seguimiento",
+    "Clear": "Despejado", "Mainly clear": "Mayormente despejado", "Partly cloudy": "Parcialmente nublado", "Overcast": "Cubierto",
+    "Fog": "Niebla", "Rime fog": "Niebla helada", "Light drizzle": "Llovizna ligera", "Drizzle": "Llovizna",
+    "Heavy drizzle": "Llovizna intensa", "Freezing drizzle": "Llovizna helada", "Light rain": "Lluvia ligera", "Rain": "Lluvia",
+    "Heavy rain": "Lluvia intensa", "Freezing rain": "Lluvia helada", "Light snow": "Nieve ligera", "Snow": "Nieve",
+    "Heavy snow": "Nevada intensa", "Snow grains": "Cinarra", "Showers": "Chubascos", "Violent showers": "Chubascos fuertes",
+    "Snow showers": "Chubascos de nieve", "Thunderstorm": "Tormenta", "Thunderstorm, hail": "Tormenta con granizo",
+    "feels {t}°": "sensación {t}°", "Day: {h} h {m:02d} min": "Día: {h} h {m:02d} min",
+    "Chance of rain · max {p} %": "Probabilidad de lluvia · máx. {p} %", "Updated {t}": "Actualizado {t}",
+    "New Year's Day": "Año Nuevo", "Good Friday": "Viernes Santo", "Easter Sunday": "Domingo de Pascua", "Easter Monday": "Lunes de Pascua",
+    "Labour Day": "Día del Trabajo", "Ascension Day": "Ascensión", "Whit Sunday": "Pentecostés", "Whit Monday": "Lunes de Pentecostés",
+    "German Unity Day": "Día de la Unidad Alemana", "Christmas Day": "Navidad", "Boxing Day": "San Esteban",
+    "Reformation Day": "Día de la Reforma", "Corpus Christi": "Corpus Christi", "All Saints' Day": "Todos los Santos",
+    "Epiphany": "Epifanía", "Assumption Day": "Asunción",
+    "Puzzle": "Problema", "of the day": "del día", "White": "las blancas", "Black": "las negras", "{s} to move": "Juegan {s}",
+    "Solution: {n} move": "Solución: {n} jugada", "Solution: {n} moves": "Solución: {n} jugadas",
+    "Solution in the web app": "Solución en la app web", "Rating {r}": "Puntuación {r}",
+    "Mate in 1": "Mate en 1", "Mate in 2": "Mate en 2", "Mate in 3": "Mate en 3", "Mate in 4": "Mate en 4", "Fork": "Horquilla",
+    "Pin": "Clavada", "Sacrifice": "Sacrificio", "Endgame": "Final", "Middlegame": "Medio juego", "Opening": "Apertura",
+    "Short": "Corto", "Long": "Largo", "Advantage": "Ventaja", "Crushing": "Aplastante", "Kingside attack": "Ataque al flanco de rey",
+    "Question of the day": "Pregunta del día", "Thought of the day": "Pensamiento del día",
+    "No entries yet – add your own in the web app?": "Aún no hay entradas – ¿añades las tuyas en la app web?",
+    "Now playing": "Sonando ahora", "Recently played": "Escuchado recientemente", "Paused": "En pausa", "Nothing playing": "No suena nada",
+    "The cover appears as soon as music plays.": "La portada aparece en cuanto suena la música.",
+    "Spotify is not connected yet": "Spotify aún no está conectado",
+    "Set it up in the web app under Plugins → Spotify.": "Configúralo en la app web en Plugins → Spotify.",
+    "Grid signal": "Semáforo de la red", "Share of renewables in electricity consumption": "Cuota de renovables en el consumo eléctrico",
+    "now": "ahora", "green": "verde", "yellow": "amarillo", "red": "rojo", "red · grid congestion": "rojo · red saturada",
+    "Best 3 hours today: from {t} (avg {p} %)": "Mejores 3 horas hoy: desde las {t} (media {p} %)",
+    "Best 3 hours tomorrow: from {t} (avg {p} %)": "Mejores 3 horas mañana: desde las {t} (media {p} %)",
+    "Source: Energy-Charts / Fraunhofer ISE · {t}": "Fuente: Energy-Charts / Fraunhofer ISE · {t}",
+    "days until": "días para", "day until": "día para", "days since": "días desde", "Today!": "¡Hoy!",
+    "Please set a valid date": "Introduce una fecha válida", "Summer holidays": "Vacaciones de verano",
+    "Art of the day": "Obra del día", "Public domain": "Dominio público",
+    "Waste collection": "Recogida de basura", "Tomorrow": "Mañana", "Today": "Hoy", "in {n} days": "en {n} días",
+    "Add your collection calendar": "Añade tu calendario de recogida",
+    "Paste the iCal link in the web app under Plugins → Waste Collection.": "Pega el enlace iCal en la app web en Plugins → Recogida de basura.",
+    "No collections in the next {n} days": "Sin recogidas en los próximos {n} días",
+    "Recycling": "Envases", "General waste": "Resto", "Paper": "Papel", "Organic waste": "Orgánico",
+    "Weather warnings": "Avisos meteorológicos", "No warnings right now": "Sin avisos por ahora", "Also: {m}": "Además: {m}",
+    "Warning": "Aviso", "Severe weather": "Tiempo adverso", "Severe weather warning": "Aviso por temporal",
+    "Extreme weather warning": "Aviso por fenómenos extremos", "{a} – {b}": "{a} – {b}",
+    "Source: Deutscher Wetterdienst via Bright Sky · {t}": "Fuente: Deutscher Wetterdienst vía Bright Sky · {t}",
+    "Deutscher Wetterdienst via Bright Sky · updated {t}": "Deutscher Wetterdienst vía Bright Sky · actualizado {t}",
+    "Scan with your phone camera": "Escanea con la cámara del móvil", "Network": "Red",
+    "Password": "Contraseña", "Wi-Fi not set up yet": "Wi-Fi aún no configurado", "Guests": "Invitados",
+    "Enter network name and password under Plugins → Guest Wi-Fi.": "Introduce el nombre de la red y la contraseña en Plugins → Wi-Fi de invitados.",
+    "Welcome! Make yourself at home.": "¡Bienvenidos! Estáis en vuestra casa.",
+    "Habits": "Hábitos", "d": "d", "No habits yet": "Aún no hay hábitos",
+    "Add some under Plugins → Habit Tracker.": "Añade algunos en Plugins → Hábitos.",
+    "Read": "Leer", "Exercise": "Deporte", "No phone after 10 pm": "Sin móvil después de las 22 h", "Meditate": "Meditar",
+    "{n} givens": "{n} pistas", "Easy": "Fácil", "Medium": "Medio", "Hard": "Difícil",
+    "Solar power": "Energía solar", "right now": "ahora mismo", "today · approx. {e} € saved": "hoy · aprox. {e} € ahorrados",
+    "{t} kWh in total": "{t} kWh en total", "Solar source not set up": "Fuente solar no configurada",
+    "Enter your OpenDTU address or Home Assistant details under Plugins → Solar Power.": "Introduce la dirección de OpenDTU o los datos de Home Assistant en Plugins → Energía solar.",
+    "Choose a gauge": "Elige una estación", "Search for a station under Plugins → Water Level.": "Busca una estación en Plugins → Nivel del agua.",
+    "rising": "subiendo", "falling": "bajando", "steady": "estable", "level": "nivel", "mean water (MW)": "nivel medio (MW)",
+    "Source: PEGELONLINE (WSV) · {t}": "Fuente: PEGELONLINE (WSV) · {t}",
+    "coming up": "próximamente", "Happy birthday": "Feliz cumpleaños", "turns {n}": "cumple {n}", "tomorrow": "mañana",
+    "in {n} d": "en {n} d", "No birthdays yet": "Aún no hay cumpleaños",
+    "Add them under Plugins → Birthdays.": "Añádelos en Plugins → Cumpleaños.",
+    "Last close · change · {n} days": "Último cierre · variación · {n} días", "Watchlist is empty": "La lista de seguimiento está vacía",
+    "Add symbols under Plugins → Watchlist.": "Añade símbolos en Plugins → Lista de seguimiento.",
+    "Source: {s} · delayed · {t}": "Fuente: {s} · con retraso · {t}",
+    "{n} is unavailable right now": "{n} no está disponible ahora",
+}
+
+WEEKDAYS = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+WEEKDAYS_SHORT = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"]
+WEEKDAY_LETTERS = "LMXJVSD"
+MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+MONTHS_GEN = MONTHS
+MONTHS_SHORT = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sept", "oct", "nov", "dic"]
+FIRST_WEEKDAY = 0
+LONG_DATE = "{wd}, {d} de {mon}"
+LONG_DATE_NO_WD = "{d} de {mon}"
+LONG_DATE_YEAR = "{d} de {mon} de {y}"
+SHORT_DATE = "{d:02d}/{m:02d}"
+DECIMAL, THOUSANDS = ",", "."
+QUOTE_MARKS = ("«", "»")
+MOON = ["Luna nueva", "Luna creciente", "Cuarto creciente", "Gibosa creciente", "Luna llena",
+        "Gibosa menguante", "Cuarto menguante", "Luna menguante"]
+
+QUOTES = [
+    ("No es que tengamos poco tiempo, sino que perdemos mucho.", "Séneca"),
+    ("Sufrimos más a menudo en la imaginación que en la realidad.", "Séneca"),
+    ("La felicidad de tu vida depende de la calidad de tus pensamientos.", "Marco Aurelio"),
+    ("No nos perturban las cosas, sino las opiniones que tenemos de ellas.", "Epicteto"),
+    ("Saber no basta, hay que aplicar; querer no basta, hay que hacer.", "Goethe"),
+    ("Solo se ve bien con el corazón. Lo esencial es invisible a los ojos.", "Antoine de Saint-Exupéry"),
+    ("Un viaje de mil millas comienza con un primer paso.", "Lao-Tse"),
+    ("Nadie se baña dos veces en el mismo río.", "Heráclito"),
+    ("La vida solo puede entenderse mirando hacia atrás, pero ha de vivirse mirando hacia delante.", "Søren Kierkegaard"),
+    ("Solo sé que no sé nada.", "Sócrates"),
+    ("Bien empezado es medio hecho.", "Aristóteles"),
+    ("Nuestra vida se desperdicia en detalles. Simplifica, simplifica.", "Henry David Thoreau"),
+]
+QUESTIONS = [
+    "¿Qué te hace ilusión hoy – en concreto?",
+    "¿Qué pequeño paso de hoy parecerá grande dentro de un año?",
+    "¿A quién podrías dar las gracias de verdad hoy?",
+    "¿Qué harías hoy si no tuvieras miedo del resultado?",
+    "¿Qué única cosa haría de hoy un buen día?",
+    "¿Qué puedes dejar de lado hoy?",
+    "¿Por qué estás agradecido ahora mismo, sin pensarlo mucho?",
+    "¿Qué conversación llevas tiempo aplazando?",
+    "¿Qué hiciste por primera vez hace poco?",
+    "¿Cómo sabrás esta noche que hoy fue un buen día?",
+    "¿A quién hace demasiado que no llamas?",
+    "¿Qué te aconsejaría hoy tu yo del futuro?",
+    "¿Dónde puedes ser generoso hoy?",
+    "¿Qué es importante para ti y no aparece en ningún calendario?",
+    "¿Cuándo hiciste algo por pura curiosidad por última vez?",
+    "¿Qué le dirías a un amigo en tu situación?",
+    "¿Qué te sorprendió esta semana?",
+    "¿Qué puedes simplificar hoy?",
+    "¿Qué pequeña alegría puedes regalar hoy a alguien?",
+    "¿Con qué te reíste a carcajadas hace poco?",
+]

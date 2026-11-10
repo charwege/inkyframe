@@ -1,0 +1,89 @@
+"""Every plugin must load and render an 800×480 RGB image from its sample data – in both languages."""
+import os
+import tempfile
+
+os.environ.setdefault("INKYFRAME_DATA", tempfile.mkdtemp())
+
+import pytest  # noqa: E402
+
+from inkyframe import dev, store  # noqa: E402
+from inkyframe.themes import THEMES  # noqa: E402
+from inkyframe import plugin as P  # noqa: E402
+
+store.load()
+P.discover()
+
+
+def test_no_load_failures():
+    assert not P.FAILED, P.FAILED
+
+
+def test_check_passes():
+    assert dev.check() == []
+
+
+@pytest.mark.parametrize("pid", sorted(P.REGISTRY))
+@pytest.mark.parametrize("lang", ["en", "de"])
+@pytest.mark.parametrize("theme", list(THEMES))
+def test_render_sample(pid, lang, theme):
+    cfg = store.get()
+    cfg["language"] = lang
+    cfg["theme"] = theme
+    p = P.REGISTRY[pid]
+    if p.sample(P.Context(p, cfg)) is None:
+        pytest.skip("plugin has no sample data")
+    img = P.render(pid, cfg, sample=True)
+    assert img.size == (800, 480) and img.mode == "RGB"
+
+
+def test_wordclock_phrases():
+    import datetime as dt
+    from inkyframe.plugins import wordclock as W
+
+    def say(lang, hhmm):
+        h, m = map(int, hhmm.split(":"))
+        cells, hours = W.words_for(dt.datetime(2026, 1, 1, h, m), lang)
+        grid = W.EN_GRID if lang == "en" else W.DE_GRID
+        return "".join(grid[r][c] for r, c in sorted(cells | hours))
+
+    assert say("de", "13:25") == "ESISTFÜNFVORHALBZWEI"
+    assert say("de", "01:00") == "ESISTEINUHR"
+    assert say("en", "13:35") == "ITISTWENTYFIVETOTWO"
+    assert say("en", "12:00") == "ITISTWELVEOCLOCK"
+
+
+def test_dark_designs_remap():
+    from inkyframe import gfx
+    from PIL import Image
+    img = Image.new("RGB", (10, 10), (255, 255, 255))
+    img.putpixel((1, 1), (0, 0, 0))
+    out = gfx.postprocess(img, "chalk")
+    assert out.getpixel((5, 5)) == (0, 0, 0) and out.getpixel((1, 1)) == (255, 255, 255)
+    assert gfx.postprocess(img, "classic").getpixel((5, 5)) == (255, 255, 255)
+
+
+def test_font_css_url():
+    from inkyframe import fonts
+    assert fonts.css_url("Inter Tight", 900, False).endswith("family=Inter+Tight:wght@900&display=swap")
+    assert ":ital,wght@1,400" in fonts.css_url("Libre Caslon Text", 400, True)
+
+
+@pytest.mark.parametrize("lang", __import__("inkyframe.i18n", fromlist=["ORDER"]).ORDER)
+def test_translations_complete(lang):
+    from inkyframe import i18n, i18n_keys
+    if lang in ("en", "de"):
+        return
+    assert i18n_keys.missing(lang) == [], f"{lang}: missing translations"
+    loc = i18n.locale(lang)
+    assert len(loc.WEEKDAYS) == 7 and len(loc.MONTHS) == 12 and len(loc.MONTHS_GEN) == 12 and len(loc.MOON) == 8
+    assert len(loc.WEEKDAY_LETTERS) == 7
+    assert len(loc.QUESTIONS) > 3, "the sample uses QUESTIONS[3]"
+
+
+@pytest.mark.parametrize("pid", sorted(P.REGISTRY))
+@pytest.mark.parametrize("lang", __import__("inkyframe.i18n", fromlist=["ORDER"]).ORDER)
+def test_render_every_language(pid, lang):
+    cfg = store.get()
+    cfg["language"] = lang
+    img = P.render(pid, cfg, sample=True)
+    assert img.size == (800, 480)

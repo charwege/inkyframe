@@ -1,0 +1,126 @@
+NAME = "Svenska"
+
+STRINGS = {
+    "Weather & Calendar": "Väder och kalender", "Chess Puzzle": "Schackproblem", "Thought of the Day": "Dagens tanke",
+    "Spotify": "Spotify", "Grid Signal": "Elnätets trafikljus", "Word Clock": "Ordklocka", "Countdown": "Nedräkning",
+    "Art of the Day": "Dagens konstverk", "Waste Collection": "Sophämtning", "Weather Warnings": "Vädervarningar",
+    "Guest Wi-Fi": "Gäst-wifi", "Habit Tracker": "Vanor", "Sudoku of the Day": "Dagens sudoku",
+    "Solar Power": "Solenergi", "Water Level": "Vattenstånd", "Birthdays": "Födelsedagar", "Watchlist": "Bevakningslista",
+    "Clear": "Klart", "Mainly clear": "Mestadels klart", "Partly cloudy": "Halvklart", "Overcast": "Mulet",
+    "Fog": "Dimma", "Rime fog": "Underkyld dimma", "Light drizzle": "Lätt duggregn", "Drizzle": "Duggregn",
+    "Heavy drizzle": "Kraftigt duggregn", "Freezing drizzle": "Underkylt duggregn", "Light rain": "Lätt regn", "Rain": "Regn",
+    "Heavy rain": "Kraftigt regn", "Freezing rain": "Underkylt regn", "Light snow": "Lätt snöfall", "Snow": "Snö",
+    "Heavy snow": "Kraftigt snöfall", "Snow grains": "Kornsnö", "Showers": "Skurar", "Violent showers": "Kraftiga skurar",
+    "Snow showers": "Snöbyar", "Thunderstorm": "Åska", "Thunderstorm, hail": "Åska med hagel",
+    "feels {t}°": "känns som {t}°", "Day: {h} h {m:02d} min": "Dag: {h} h {m:02d} min",
+    "Chance of rain · max {p} %": "Risk för regn · max {p} %", "Updated {t}": "Uppdaterad {t}",
+    "New Year's Day": "Nyårsdagen", "Good Friday": "Långfredagen", "Easter Sunday": "Påskdagen", "Easter Monday": "Annandag påsk",
+    "Labour Day": "Första maj", "Ascension Day": "Kristi himmelsfärdsdag", "Whit Sunday": "Pingstdagen", "Whit Monday": "Annandag pingst",
+    "German Unity Day": "Tysklands enhetsdag", "Christmas Day": "Juldagen", "Boxing Day": "Annandag jul",
+    "Reformation Day": "Reformationsdagen", "Corpus Christi": "Kristi lekamens dag", "All Saints' Day": "Allhelgonadagen",
+    "Epiphany": "Trettondedag jul", "Assumption Day": "Marie himmelsfärd",
+    "Puzzle": "Dagens", "of the day": "problem", "White": "Vit", "Black": "Svart", "{s} to move": "{s} drar",
+    "Solution: {n} move": "Lösning: {n} drag", "Solution: {n} moves": "Lösning: {n} drag",
+    "Solution in the web app": "Lösningen finns i webbappen", "Rating {r}": "Rating {r}",
+    "Mate in 1": "Matt i 1", "Mate in 2": "Matt i 2", "Mate in 3": "Matt i 3", "Mate in 4": "Matt i 4", "Fork": "Gaffel",
+    "Pin": "Bindning", "Sacrifice": "Offer", "Endgame": "Slutspel", "Middlegame": "Mittspel", "Opening": "Öppning",
+    "Short": "Kort", "Long": "Lång", "Advantage": "Fördel", "Crushing": "Förkrossande", "Kingside attack": "Kungsflygelangrepp",
+    "Question of the day": "Dagens fråga", "Thought of the day": "Dagens tanke",
+    "No entries yet – add your own in the web app?": "Inga poster än – lägg till egna i webbappen?",
+    "Now playing": "Spelas nu", "Recently played": "Nyligen spelat", "Paused": "Pausad", "Nothing playing": "Inget spelas",
+    "The cover appears as soon as music plays.": "Omslaget visas så fort musik spelas.",
+    "Spotify is not connected yet": "Spotify är inte anslutet än",
+    "Set it up in the web app under Plugins → Spotify.": "Ställ in det i webbappen under Plugins → Spotify.",
+    "Grid signal": "Elnätets trafikljus", "Share of renewables in electricity consumption": "Andel förnybart i elförbrukningen",
+    "now": "nu", "green": "grön", "yellow": "gul", "red": "röd", "red · grid congestion": "röd · överbelastat nät",
+    "Best 3 hours today: from {t} (avg {p} %)": "Bästa 3 timmarna i dag: från {t} (snitt {p} %)",
+    "Best 3 hours tomorrow: from {t} (avg {p} %)": "Bästa 3 timmarna i morgon: från {t} (snitt {p} %)",
+    "Source: Energy-Charts / Fraunhofer ISE · {t}": "Källa: Energy-Charts / Fraunhofer ISE · {t}",
+    "days until": "dagar kvar till", "day until": "dag kvar till", "days since": "dagar sedan", "Today!": "I dag!",
+    "Please set a valid date": "Ange ett giltigt datum", "Summer holidays": "Sommarlov",
+    "Art of the day": "Dagens konstverk", "Public domain": "Fri från upphovsrätt",
+    "Waste collection": "Sophämtning", "Tomorrow": "I morgon", "Today": "I dag", "in {n} days": "om {n} dagar",
+    "Add your collection calendar": "Lägg till din hämtningskalender",
+    "Paste the iCal link in the web app under Plugins → Waste Collection.": "Klistra in iCal-länken i webbappen under Plugins → Sophämtning.",
+    "No collections in the next {n} days": "Ingen hämtning de närmaste {n} dagarna",
+    "Recycling": "Förpackningar", "General waste": "Restavfall", "Paper": "Papper", "Organic waste": "Matavfall",
+    "Weather warnings": "Vädervarningar", "No warnings right now": "Inga varningar just nu", "Also: {m}": "Även: {m}",
+    "Warning": "Varning", "Severe weather": "Farligt väder", "Severe weather warning": "Varning för oväder",
+    "Extreme weather warning": "Varning för extremt väder", "{a} – {b}": "{a} – {b}",
+    "Source: Deutscher Wetterdienst via Bright Sky · {t}": "Källa: Deutscher Wetterdienst via Bright Sky · {t}",
+    "Deutscher Wetterdienst via Bright Sky · updated {t}": "Deutscher Wetterdienst via Bright Sky · uppdaterad {t}",
+    "Scan with your phone camera": "Skanna med mobilkameran", "Network": "Nätverk",
+    "Password": "Lösenord", "Wi-Fi not set up yet": "Wifi är inte inställt än", "Guests": "Gäster",
+    "Enter network name and password under Plugins → Guest Wi-Fi.": "Ange nätverksnamn och lösenord under Plugins → Gäst-wifi.",
+    "Welcome! Make yourself at home.": "Välkommen! Känn dig som hemma.",
+    "Habits": "Vanor", "d": "d", "No habits yet": "Inga vanor än",
+    "Add some under Plugins → Habit Tracker.": "Lägg till några under Plugins → Vanor.",
+    "Read": "Läsa", "Exercise": "Träna", "No phone after 10 pm": "Ingen mobil efter 22", "Meditate": "Meditera",
+    "{n} givens": "{n} givna siffror", "Easy": "Lätt", "Medium": "Medel", "Hard": "Svår",
+    "Solar power": "Solenergi", "right now": "just nu", "today · approx. {e} € saved": "i dag · ca {e} € sparat",
+    "{t} kWh in total": "{t} kWh totalt", "Solar source not set up": "Solkälla inte inställd",
+    "Enter your OpenDTU address or Home Assistant details under Plugins → Solar Power.": "Ange OpenDTU-adress eller Home Assistant-uppgifter under Plugins → Solenergi.",
+    "Choose a gauge": "Välj en mätstation", "Search for a station under Plugins → Water Level.": "Sök en mätstation under Plugins → Vattenstånd.",
+    "rising": "stigande", "falling": "sjunkande", "steady": "oförändrat", "level": "nivå", "mean water (MW)": "medelvattenstånd (MW)",
+    "Source: PEGELONLINE (WSV) · {t}": "Källa: PEGELONLINE (WSV) · {t}",
+    "coming up": "snart", "Happy birthday": "Grattis på födelsedagen", "turns {n}": "fyller {n}", "tomorrow": "i morgon",
+    "in {n} d": "om {n} d", "No birthdays yet": "Inga födelsedagar än",
+    "Add them under Plugins → Birthdays.": "Lägg till dem under Plugins → Födelsedagar.",
+    "Last close · change · {n} days": "Senaste stängning · förändring · {n} dagar", "Watchlist is empty": "Bevakningslistan är tom",
+    "Add symbols under Plugins → Watchlist.": "Lägg till symboler under Plugins → Bevakningslista.",
+    "Source: {s} · delayed · {t}": "Källa: {s} · fördröjt · {t}",
+    "{n} is unavailable right now": "{n} är inte tillgängligt just nu",
+}
+
+WEEKDAYS = ["måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag", "söndag"]
+WEEKDAYS_SHORT = ["mån", "tis", "ons", "tors", "fre", "lör", "sön"]
+WEEKDAY_LETTERS = "MTOTFLS"
+MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"]
+MONTHS_GEN = MONTHS
+MONTHS_SHORT = ["jan", "feb", "mars", "apr", "maj", "juni", "juli", "aug", "sep", "okt", "nov", "dec"]
+FIRST_WEEKDAY = 0
+LONG_DATE = "{wd} {d} {mon}"
+LONG_DATE_NO_WD = "{d} {mon}"
+LONG_DATE_YEAR = "{d} {mon} {y}"
+SHORT_DATE = "{d}/{m}"
+DECIMAL, THOUSANDS = ",", " "
+QUOTE_MARKS = ("”", "”")
+MOON = ["Nymåne", "Tilltagande skära", "Första kvarteret", "Tilltagande måne", "Fullmåne",
+        "Avtagande måne", "Sista kvarteret", "Avtagande skära"]
+
+QUOTES = [
+    ("Det är inte så att vi har lite tid, utan att vi slösar bort mycket av den.", "Seneca"),
+    ("Vi lider oftare i fantasin än i verkligheten.", "Seneca"),
+    ("Lyckan i ditt liv beror på kvaliteten på dina tankar.", "Marcus Aurelius"),
+    ("Det är inte tingen som oroar människorna, utan deras föreställningar om tingen.", "Epiktetos"),
+    ("Att veta räcker inte, vi måste tillämpa; att vilja räcker inte, vi måste handla.", "Goethe"),
+    ("Man ser bara riktigt med hjärtat. Det väsentliga är osynligt för ögat.", "Antoine de Saint-Exupéry"),
+    ("En resa på tusen mil börjar med ett enda steg.", "Laozi"),
+    ("Man kan inte stiga ner i samma flod två gånger.", "Herakleitos"),
+    ("Livet kan bara förstås baklänges, men det måste levas framlänges.", "Søren Kierkegaard"),
+    ("Jag vet att jag ingenting vet.", "Sokrates"),
+    ("Väl påbörjat är hälften gjort.", "Aristoteles"),
+    ("Vårt liv slösas bort på detaljer. Förenkla, förenkla.", "Henry David Thoreau"),
+]
+QUESTIONS = [
+    "Vad ser du fram emot i dag – helt konkret?",
+    "Vilket litet steg i dag kommer att kännas stort om ett år?",
+    "Vem skulle du kunna tacka uppriktigt i dag?",
+    "Vad skulle du göra i dag om du inte var rädd för resultatet?",
+    "Vilken enda sak skulle göra dagen till en bra dag?",
+    "Vad kan du strunta i i dag?",
+    "Vad är du tacksam för just nu, utan att tänka efter?",
+    "Vilket samtal har du skjutit upp?",
+    "Vad gjorde du för första gången nyligen?",
+    "Hur vet du i kväll att det var en bra dag?",
+    "Vem har du inte ringt på alldeles för länge?",
+    "Vad skulle ditt framtida jag råda dig till i dag?",
+    "Var kan du vara generös i dag?",
+    "Vad är viktigt för dig men står inte i någon kalender?",
+    "När gjorde du senast något av ren nyfikenhet?",
+    "Vad skulle du säga till en vän i din situation?",
+    "Vad överraskade dig den här veckan?",
+    "Vad kan du förenkla i dag?",
+    "Vilken liten glädje kan du ge någon i dag?",
+    "Vad skrattade du högt åt senast?",
+]
