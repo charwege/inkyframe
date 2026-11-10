@@ -193,6 +193,10 @@ class Quote(Plugin):
 
     def render(self, ctx, data=None):
         kind, text, author = data or self.pick(ctx)
+        from inkyframe import designs
+        special = designs.quote(ctx, kind, text, author)   # signature layout of the chosen studio design
+        if special is not None:
+            return special
         img, d = ctx.canvas()
         W, H = ctx.W, ctx.H
         ctx.frame(d)

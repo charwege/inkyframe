@@ -40,13 +40,20 @@ Controlled from your phone (web app). Every screen is a small
 ## Designs
 Thirteen designs, picked in the web app (*Design* card). A design changes fonts, headings, frames and
 accent colours of every plugin; dark designs recolour the whole screen. The web app can follow the frame
-or use its own design.
+or use its own design. The ten studio designs also bring their own signature layout for *Weather & Calendar*
+and *Thought of the Day* (Bauhaus shapes, a newspaper front page, a pixel-game dialogue, a blueprint with
+title block …).
 
 | Basics | Studio designs |
 |---|---|
 | Classic · Modern · Playful | Bauhaus · Newspaper · Art déco (dark) · Pixel (dark) · Zen · Swiss · Memphis · Blueprint (dark) · Botanical · Chalkboard (dark) |
 
 ![Designs](docs/img/designs.png)
+
+<details><summary>Signature layouts of the studio designs</summary>
+
+![Studio layouts](docs/img/studio-layouts.png)
+</details>
 
 Fonts: *Classic* uses DejaVu, *Modern* Inter, *Playful* Comic Neue (apt). The studio designs use Google Fonts
 (SIL Open Font License) that `install.sh` downloads – or the web app fetches them the first time you pick a design

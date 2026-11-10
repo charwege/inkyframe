@@ -189,6 +189,10 @@ def preview(pid):
 
 
 def main():
+    theme = store.get().get("theme", "classic")
+    if "google" in themes.get(theme) and not themes.fonts_ok(theme, store.FONT_DIR):
+        from . import fonts
+        fonts.download_async(theme)        # e.g. new faces after an update
     engine.start()
     port = int(os.environ.get("INKYFRAME_PORT", "8080"))
     log.info("web app on port %s", port)

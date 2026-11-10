@@ -213,3 +213,13 @@ def status(font_dir=None):
     from . import store
     fd = font_dir or store.FONT_DIR
     return {name: fonts_ok(name, fd) for name in THEMES}
+
+
+def _add_studio_faces():
+    from .studio_fonts import google_spec
+    for name, t in THEMES.items():
+        if "google" in t:
+            t["google"].update(google_spec(name))
+
+
+_add_studio_faces()

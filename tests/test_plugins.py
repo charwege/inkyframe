@@ -87,3 +87,18 @@ def test_render_every_language(pid, lang):
     cfg["language"] = lang
     img = P.render(pid, cfg, sample=True)
     assert img.size == (800, 480)
+
+
+
+@pytest.mark.parametrize("theme", ["bauhaus", "newspaper", "deco", "pixel", "zen", "swiss", "memphis", "blueprint",
+                                   "botanical", "chalk"])
+@pytest.mark.parametrize("pid", ["weather", "quote"])
+def test_studio_signature_layouts(theme, pid):
+    """Every studio design draws its own weather / thought-of-the-day layout – in every language."""
+    from inkyframe import i18n
+    for lang in i18n.ORDER:
+        cfg = store.get()
+        cfg["language"] = lang
+        cfg["theme"] = theme
+        img = P.render(pid, cfg, sample=True)
+        assert img.size == (800, 480) and img.info.get("studio"), (theme, lang)

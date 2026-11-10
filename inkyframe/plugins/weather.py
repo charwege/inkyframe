@@ -109,6 +109,10 @@ class Weather(Plugin):
     def render(self, ctx, data=None):
         import datetime as dt
         data = data or self.fetch(ctx)
+        from inkyframe import designs
+        special = designs.weather(ctx, data)       # signature layout of the chosen studio design
+        if special is not None:
+            return special
         now, today, lang = ctx.now, ctx.today, ctx.lang
         W, H = ctx.W, ctx.H
         img, d = ctx.canvas()

@@ -323,4 +323,6 @@ def render(pid, cfg=None, now=None, sample=False):
 def finish(plugin, ctx, img):
     """Apply the design's colour remap (dark designs) to a rendered image."""
     gfx.set_theme(ctx.theme)
+    if img.info.get("studio"):          # signature layouts are drawn in their final colours
+        return img
     return gfx.postprocess(img, ctx.theme, remap=plugin.theme_remap)
