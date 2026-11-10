@@ -138,7 +138,8 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .rot{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
   .rot:first-child{border-top:0}
-  .rot .nm{flex:1}
+  .rot .nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+  .rot .nm select{width:100%;max-width:170px;font-size:12px;padding:3px 6px}
   .rot input[type=number]{width:70px;text-align:right}
   .rot .mv{display:flex;flex-direction:column}
   .rot .mv button{border:0;background:none;font-size:13px;line-height:1;padding:3px 6px;color:var(--mute);cursor:pointer}
@@ -200,9 +201,24 @@
       <option value="swiss">Swiss</option><option value="memphis">Memphis</option><option value="blueprint">Blueprint</option><option value="botanical">Botanical</option><option value="chalk">Chalkboard</option></select></div>
   </div>
 
+  <div class="card" id="demoCard">
+    <h2>Demo mode</h2>
+    <p class="hint">For showcase videos: the frame walks through the screens with built-in sample data – nothing personal appears. Quiet hours, rotation and Spotify are ignored while it runs.</p>
+    <div class="row"><div>Seconds per screen<div class="hint">counted after the panel has finished drawing (a refresh takes about 30 s)</div></div><input type="number" id="demoSec" min="20" max="3600"></div>
+    <div class="row"><label>Go through all plugins</label><label class="sw"><input type="checkbox" id="demoPl"><span></span></label></div>
+    <div class="row"><label>Go through all designs</label><label class="sw"><input type="checkbox" id="demoDe"><span></span></label></div>
+    <div class="row"><label>Go through all languages</label><label class="sw"><input type="checkbox" id="demoLa"><span></span></label></div>
+    <div class="status" id="demoSt"></div>
+    <div class="btns">
+      <button class="btn" id="demoBtn" onclick="toggleDemo()">Start demo</button>
+      <button class="btn ghost" id="demoNext" style="display:none" onclick="demoNext()">Next screen</button>
+    </div>
+  </div>
+
   <div class="card">
     <h2>Rotation</h2>
     <div class="row"><label>Rotation on</label><label class="sw"><input type="checkbox" id="autoOn" onchange="setAuto(this.checked)"><span></span></label></div>
+    <p class="hint">Under each name: the design for that screen while rotation is on.</p>
     <div id="rotList"></div>
     <div id="intList"></div>
     <div class="row"><div>Manual choice lasts (min)<div class="hint">when you pick a mode while rotation is on</div></div><input type="number" id="hold" min="1" max="600"></div>
@@ -260,10 +276,17 @@ async function load(full){
   $('stReason').textContent = st.reason ? '· '+st.reason : '';
   const p=$('stPill'); p.className='pill'+(st.busy?' busy':st.error?' err':'');
   p.textContent = st.busy ? 'drawing …' : st.error ? 'error' : (st.updated ? 'updated '+fmt(st.updated) : 'ready');
-  let nx = st.override_until ? 'Manual until '+fmt(st.override_until)+', then rotation' : st.next_change ? 'Next switch ≈ '+fmt(st.next_change) : '';
+  const TN = {}; S.themes.forEach(t=>TN[t.id]=t.label);
+  const LN = Object.fromEntries(S.languages);
+  const dm = st.demo, don = c.demo.enabled;
+  $('demoBtn').textContent = don ? 'Stop demo' : 'Start demo';
+  $('demoNext').style.display = don ? '' : 'none';
+  $('demoSt').textContent = don && dm ? `Screen ${dm.step+1}: ${PN[dm.mode]||dm.mode} · ${TN[dm.theme]||dm.theme} · ${LN[dm.language]||dm.language} — next: ${PN[dm.next.mode]||dm.next.mode} · ${TN[dm.next.theme]||dm.next.theme}` : '';
+  if(st.theme && st.theme !== c.theme && !don) $('stReason').textContent += ' · ' + (TN[st.theme]||st.theme);
+  let nx = don ? 'Demo – next screen ≈ '+fmt(st.next_change) : st.override_until ? 'Manual until '+fmt(st.override_until)+', then rotation' : st.next_change ? 'Next switch ≈ '+fmt(st.next_change) : '';
   if(st.error) nx += (nx?' · ':'') + st.error;
   $('stNext').textContent = nx;
-  $('backAuto').style.display = (st.override_until || !c.auto.enabled) ? '' : 'none';
+  $('backAuto').style.display = (!don && (st.override_until || !c.auto.enabled)) ? '' : 'none';
   if(st.updated !== lastUpdated){ lastUpdated = st.updated; $('cur').src='/current.png?'+Date.now(); }
   $('modes').innerHTML = S.plugins.map(p=>`<button class="mode ${st.mode===p.id?'on':''}" onclick="showMode('${p.id}')">
      <span class="pv" title="Preview" onclick="event.stopPropagation();preview('${p.id}')">⤢</span>
@@ -276,6 +299,7 @@ async function load(full){
   $('intList').innerHTML = S.plugins.filter(p=>p.can_interrupt).map(p=>`<div class="row"><div>${esc(p.name)} may take over<div class="hint">${esc(p.description)}</div></div>
      <label class="sw"><input type="checkbox" data-int="${p.id}" ${c.interrupts[p.id]?'checked':''}><span></span></label></div>`).join('');
   $('hold').value = c.auto.hold_minutes;
+  $('demoSec').value = c.demo.seconds; $('demoPl').checked = c.demo.plugins; $('demoDe').checked = c.demo.designs; $('demoLa').checked = c.demo.languages;
   $('qOn').checked = c.quiet.enabled; $('qStart').value=c.quiet.start; $('qEnd').value=c.quiet.end;
   renderPlugins();
   $('failed').textContent = S.failed.length ? 'Failed to load: '+S.failed.join(', ')+' (see log)' : '';
@@ -332,10 +356,17 @@ function renderRot(items){
   S.plugins.forEach(p=>{ if(!rot.find(r=>r.mode===p.id)) rot.push({mode:p.id,minutes:10,enabled:false}) });
   $('rotList').innerHTML = rot.map((r,i)=>`<div class="rot">
     <label class="sw"><input type="checkbox" ${r.enabled?'checked':''} onchange="rot[${i}].enabled=this.checked"><span></span></label>
-    <span class="nm">${esc(PN[r.mode])}</span>
+    <span class="nm"><span>${esc(PN[r.mode])}</span><select aria-label="Design for ${esc(PN[r.mode])}" onchange="rot[${i}].theme=this.value">
+      <option value="">Frame design</option>${S.themes.map(t=>`<option value="${t.id}" ${r.theme===t.id?'selected':''}>${esc(t.label)}</option>`).join('')}</select></span>
     <input type="number" min="1" max="720" value="${r.minutes}" onchange="rot[${i}].minutes=+this.value"> <span class="hint">min</span>
     <span class="mv"><button onclick="mv(${i},-1)">▲</button><button onclick="mv(${i},1)">▼</button></span></div>`).join('');
 }
+async function toggleDemo(){
+  const on = !S.config.demo.enabled;
+  if(on && !$('demoPl').checked && !$('demoDe').checked && !$('demoLa').checked){ toast('Switch on at least one of plugins, designs or languages'); return }
+  try{ await post('/api/demo',{enabled:on,seconds:+$('demoSec').value,plugins:$('demoPl').checked,designs:$('demoDe').checked,languages:$('demoLa').checked});
+       toast(on?'Demo started – first screen in about 30 s':'Demo stopped'); load(true) }catch(e){ toast(e.message) } }
+async function demoNext(){ try{ await post('/api/demo',{next:true}); toast('Next screen – about 30 s'); setTimeout(()=>load(),800) }catch(e){ toast(e.message) } }
 function mv(i,d){const j=i+d;if(j<0||j>=rot.length)return;[rot[i],rot[j]]=[rot[j],rot[i]];renderRot()}
 async function setAuto(on){try{await post('/api/auto',{enabled:on});toast(on?'Rotation on':'Rotation off');load(true)}catch(e){toast(e.message)}}
 function saveAuto(){

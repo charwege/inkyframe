@@ -21,6 +21,7 @@ DEFAULTS = {
         "enabled": False,
         "hold_minutes": 30,            # how long a manually chosen mode stays while rotating
         "items": [                     # order = rotation order
+            # optional per item: "theme": "<design>" – shown in that design instead of the frame's
             {"mode": "weather", "minutes": 20, "enabled": True},
             {"mode": "quote", "minutes": 10, "enabled": True},
             {"mode": "chess", "minutes": 10, "enabled": True},
@@ -32,6 +33,8 @@ DEFAULTS = {
     # plugins allowed to take over the display (e.g. Spotify while music plays)
     "interrupts": {"spotify": True},
     "quiet": {"enabled": True, "start": "23:00", "end": "06:30"},
+    # demo mode for showcase videos: walks through plugins / designs / languages with built-in sample data
+    "demo": {"enabled": False, "seconds": 60, "plugins": True, "designs": True, "languages": False},
     "display": {"rotate180": False, "saturation": 0.5, "crisp_text": True},
     "plugins": {},                     # per-plugin settings (defaults come from each plugin)
 }

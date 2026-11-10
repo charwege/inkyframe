@@ -79,10 +79,45 @@ def config():
         return jsonify(ok=False, error="unknown language"), 400
     if "theme" in patch and patch["theme"] not in themes.THEMES:
         return jsonify(ok=False, error="unknown design"), 400
+    for item in (patch.get("auto") or {}).get("items") or []:
+        if item.get("theme") not in themes.THEMES:
+            item.pop("theme", None)                    # "" / unknown = the frame's design
+        else:
+            _need_fonts(item["theme"])
     store.update(patch)
     if "theme" in patch and "google" in themes.get(patch["theme"]) and not themes.fonts_ok(patch["theme"], store.FONT_DIR):
         from . import fonts
         fonts.download_async(patch["theme"])           # fetch the design's fonts in the background
+    engine.refresh()
+    return jsonify(ok=True)
+
+
+def _need_fonts(theme):
+    if "google" in themes.get(theme) and not themes.fonts_ok(theme, store.FONT_DIR):
+        from . import fonts
+        fonts.download_async(theme)
+
+
+@app.post("/api/demo")
+def demo():
+    """Demo mode for showcase videos. Body: enabled, seconds, plugins, designs, languages – or {"next": true}."""
+    body = request.get_json(force=True) or {}
+    if body.get("next"):
+        engine.demo_next()
+        return jsonify(ok=True)
+    patch = {k: bool(body[k]) for k in ("enabled", "plugins", "designs", "languages") if k in body}
+    if "seconds" in body:
+        try:
+            patch["seconds"] = max(20, min(3600, int(body["seconds"])))
+        except (TypeError, ValueError):
+            return jsonify(ok=False, error="seconds must be a number"), 400
+    cfg = store.update({"demo": patch})
+    if cfg["demo"]["enabled"]:
+        if patch.get("enabled"):
+            engine.demo_on = False                     # (re)start with the first screen
+            engine.override = None
+        for t in (themes.THEMES if cfg["demo"]["designs"] else []):
+            _need_fonts(t)
     engine.refresh()
     return jsonify(ok=True)
 
@@ -189,10 +224,13 @@ def preview(pid):
 
 
 def main():
-    theme = store.get().get("theme", "classic")
-    if "google" in themes.get(theme) and not themes.fonts_ok(theme, store.FONT_DIR):
-        from . import fonts
-        fonts.download_async(theme)        # e.g. new faces after an update
+    cfg = store.get()
+    used = {cfg.get("theme", "classic")} | {i.get("theme") for i in cfg["auto"]["items"]}
+    if cfg["demo"]["enabled"] and cfg["demo"]["designs"]:
+        used |= set(themes.THEMES)
+    for theme in used:
+        if theme in themes.THEMES:
+            _need_fonts(theme)             # e.g. new faces after an update
     engine.start()
     port = int(os.environ.get("INKYFRAME_PORT", "8080"))
     log.info("web app on port %s", port)

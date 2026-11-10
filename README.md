@@ -32,6 +32,8 @@ Controlled from your phone (web app). Every screen is a small
 - **Rotation** with per-plugin durations, **fixed mode**, **quiet hours**
 - **Interrupts** – plugins can take over the screen when it matters: Spotify while music plays,
   waste collection the evening before, weather warnings, birthdays on the day
+- **A design per screen** – in the rotation list every plugin can get its own design (weather as a newspaper, the question in Zen …)
+- **Demo mode** – walks through all plugins, designs and languages with built-in sample data, made for filming a showcase video
 - **13 designs** – from *Classic* to *Bauhaus*, *Pixel*, *Blueprint* or *Chalkboard* – for the frame and the web app
 - **12 display languages** English, Deutsch, Français, Español, Italiano, Português, Nederlands, Svenska, Dansk, Norsk, Suomi, Polski – selectable in the web app (dates, numbers, holidays, quotes and plugin texts are localised)
 - Redraws only when the picture really changes – easy on the e-ink panel

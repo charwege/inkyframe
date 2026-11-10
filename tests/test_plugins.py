@@ -102,3 +102,52 @@ def test_studio_signature_layouts(theme, pid):
         cfg["theme"] = theme
         img = P.render(pid, cfg, sample=True)
         assert img.size == (800, 480) and img.info.get("studio"), (theme, lang)
+
+
+class _FakeDisplay:
+    available = False
+
+    def __init__(self):
+        self.shown = []
+
+    def show(self, img):
+        self.shown.append(img)
+
+
+def _engine():
+    from inkyframe.engine import Engine
+    return Engine(_FakeDisplay())
+
+
+def test_rotation_design_per_plugin():
+    store.update({"theme": "classic", "demo": {"enabled": False}, "quiet": {"enabled": False},
+                  "interrupts": {"spotify": False},
+                  "auto": {"enabled": True, "items": [{"mode": "quote", "minutes": 10, "enabled": True, "theme": "bauhaus"},
+                                                      {"mode": "wordclock", "minutes": 10, "enabled": True}]}})
+    e = _engine()
+    e.tick()
+    assert (e.status["mode"], e.status["theme"]) == ("quote", "bauhaus")
+    assert e.display.shown[-1].info.get("studio")            # drawn with the Bauhaus layout
+    e.rot_since -= 601
+    e.tick()
+    assert (e.status["mode"], e.status["theme"]) == ("wordclock", "classic")
+    store.update({"auto": {"enabled": False}})
+
+
+def test_demo_mode_walks_plugins_designs_languages():
+    from inkyframe import i18n
+    store.update({"demo": {"enabled": True, "seconds": 20, "plugins": True, "designs": True, "languages": True},
+                  "quiet": {"enabled": True, "start": "00:00", "end": "23:59"}})
+    e = _engine()
+    seen = []
+    for _ in range(4):
+        e.tick()
+        seen.append((e.status["mode"], e.status["theme"], e.status["language"]))
+        e.demo_next()
+    assert len(set(seen)) == 4 and len(e.display.shown) == 4       # quiet hours don't stop the demo
+    assert [s[1] for s in seen] == list(THEMES)[:4]
+    assert [s[2] for s in seen] == list(i18n.ORDER)[:4]
+    assert e.status["demo"]["next"]["step"] == 4
+    e.select("weather")                                          # picking a screen ends the demo
+    assert not store.get()["demo"]["enabled"]
+    store.update({"quiet": {"enabled": False}})
