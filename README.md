@@ -7,8 +7,8 @@ Controlled from your phone (web app). Every screen is a small
 [plugin](docs/PLUGINS.md) – write your own in one Python file, no Pi needed to develop it.
 
 <p align="center">
-  <a href="docs/media/inkyframe-demo.mp4"><img src="docs/media/inkyframe-demo.gif" width="720" alt="inkyframe demo – click for the full 30-second video with sound"></a><br>
-  <sub>▶ <a href="docs/media/inkyframe-demo.mp4">Watch the full 30-second video (with sound)</a></sub>
+  <a href="docs/media/inkyframe-demo.mp4"><img src="docs/media/inkyframe-demo.gif" width="720" alt="inkyframe demo – click for the full 60-second video with sound"></a><br>
+  <sub>▶ <a href="docs/media/inkyframe-demo.mp4">Watch the full 60-second video (with sound)</a></sub>
 </p>
 
 | Weather & Calendar | Word Clock | Chess Puzzle |
