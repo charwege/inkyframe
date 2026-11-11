@@ -42,8 +42,7 @@ Controlled from your phone (web app). Every screen is a small
 ## Designs
 Thirteen designs, picked in the web app (*Design* card). A design changes fonts, headings, frames and
 accent colours of every plugin; dark designs recolour the whole screen. The web app can follow the frame
-or use its own design. The ten studio designs also bring their own signature layout for *Weather & Calendar*
-and *Thought of the Day* (Bauhaus shapes, a newspaper front page, a pixel-game dialogue, a blueprint with
+or use its own design. The ten studio designs also bring their own signature layout for every plugin (Bauhaus shapes, a newspaper front page, a pixel-game dialogue, a blueprint with
 title block …).
 
 | Basics | Studio designs |
@@ -52,9 +51,50 @@ title block …).
 
 ![Designs](docs/img/designs.png)
 
-<details><summary>Signature layouts of the studio designs</summary>
+<details><summary>Every plugin in every studio design</summary>
 
-![Studio layouts](docs/img/studio-layouts.png)
+![Weather and thought of the day](docs/img/studio-layouts.png)
+
+**Bauhaus**
+
+![Bauhaus](docs/img/layouts/bauhaus.png)
+
+**Newspaper**
+
+![Newspaper](docs/img/layouts/newspaper.png)
+
+**Art déco**
+
+![Art déco](docs/img/layouts/deco.png)
+
+**Pixel**
+
+![Pixel](docs/img/layouts/pixel.png)
+
+**Zen**
+
+![Zen](docs/img/layouts/zen.png)
+
+**Swiss**
+
+![Swiss](docs/img/layouts/swiss.png)
+
+**Memphis**
+
+![Memphis](docs/img/layouts/memphis.png)
+
+**Blueprint**
+
+![Blueprint](docs/img/layouts/blueprint.png)
+
+**Botanical**
+
+![Botanical](docs/img/layouts/botanical.png)
+
+**Chalkboard**
+
+![Chalkboard](docs/img/layouts/chalk.png)
+
 </details>
 
 Fonts: *Classic* uses DejaVu, *Modern* Inter, *Playful* Comic Neue (apt). The studio designs use Google Fonts
